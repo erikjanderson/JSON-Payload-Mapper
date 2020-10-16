@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="DELETE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_156954_payload_m.IREMapUIHelper</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>IREMapUIHelper</name>
+        <script><![CDATA[var IREMapUIHelper = Class.create();
+IREMapUIHelper.prototype = {
+    initialize: function() {
+    },
+	
+	getReferenceTable: function(table, element){
+		var gr = new GlideRecord("sys_dictionary");
+		gr.addQuery("name", table);
+		gr.addQuery("element", element);
+		gr.query();
+		if (gr.next()) {
+			if(gr.reference){
+				return gr.reference.name + '';
+			}
+		}
+	},
+	
+	analyzePayload: function(payload){
+		try{
+			var obj = JSON.parse(payload);
+			var keyObj = this.scanObject(obj, 0);
+			var array = this.polishObj(keyObj);
+			return array;
+		}catch(e){
+			gs.addErrorMessage(JSON.stringify(e));
+		}
+	},
+
+	polishObj: function(keyObj){
+		var returnArray = [];
+		var lowestLevel;
+		for(var key in keyObj){
+			if(!lowestLevel && lowestLevel != 0){
+				lowestLevel = keyObj[key].level;
+			}else{
+				if(keyObj[key].level < lowestLevel){
+					lowestLevel = keyObj[key].level;
+				}
+			}
+			returnArray.push(keyObj[key]);
+		}
+		if(lowestLevel){
+			returnArray = this.reduceLevels(returnArray, lowestLevel);
+		}
+		return returnArray;
+	},
+
+	reduceLevels: function(array, lowestLevel){
+		for(var i = 0; i < array.length; i++){
+			array[i].level =  array[i].level - lowestLevel;
+		}
+		return array;
+	},
+
+	scanObject: function(obj, level, stack, arrayObj){
+		if(!arrayObj){
+			arrayObj = {};
+		}
+		
+		for(var key in obj){
+			var newStack = this.getStack(key, stack);
+			var type = this.getType(obj[key]);
+			if(type === 'object'){
+				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type);
+				arrayObj = this.scanObject(obj[key], level + 1, newStack, arrayObj);
+			}else if(type === 'array'){
+				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type);
+				arrayObj = this.scanArray(obj[key], level + 1, newStack, arrayObj);
+			}else{
+				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type);
+			}
+		}
+		return arrayObj;
+	},
+
+	scanArray: function(array, level, stack, arrayObj){
+		for(var i = 0; i < array.length; i++){
+			arrayObj = this.scanObject(array[i], level, stack, arrayObj);
+		}
+		return arrayObj;
+	},
+
+	getStack: function(key, stack){
+		if(!stack){
+			stack = key;
+		}else{
+			stack = stack + '.' + key;
+		}
+		return stack;
+	},
+
+
+	getType: function(val) {
+		var type = typeof val;
+		if (type === 'object') {
+			if (Array.isArray(val)) {
+				return 'array';
+			}
+		}
+		return type;
+    },
+	
+	constructSimplifiedMap: function(viewModel){
+		for(var i = 0; i < viewModel.items.length; i++){
+			var table = viewModel.items[i];
+			delete table.className.displayValue;
+			delete table.className.table;
+			delete table.compress;
+
+			table.values = this.simplifiyValues(table.values);
+		}			
+		if(viewModel.relations && viewModel.relations.length > 0){
+			viewModel.relations = this.simplifyRelations(viewModel.relations);	
+		}
+		return viewModel;
+	},
+
+	simplifiyValues: function(valuesArray){
+		for(var i = 0; i < valuesArray.length; i++){
+			var value = valuesArray[i];
+			delete value.compress;
+			delete value.column.displayValue;
+			delete value.column.table;
+			delete value.column.parentTable;
+			if(!value.column.referenceField.value){
+				delete value.column.referenceField;
+			}
+
+			delete value.objectKey.hidden;
+			delete value.objectKey.level;
+			delete value.objectKey.type;
+			delete value.objectKey.type;
+			delete value.objectKey.value;
+			delete value.objectKey.key;
+
+		}
+		return valuesArray;
+	},
+
+	simplifyRelations: function(relationsArray){
+		for(var i = 0; i < relationsArray.length; i++){
+			var relationship = relationsArray[i];
+			delete relationship.parent.displayValue;
+			delete relationship.child.displayValue;
+			delete relationship.child.type;
+			delete relationship.type.displayValue;
+			delete relationship.compress;
+		}
+		return relationsArray;
+	},
+	
+	PayloadElement: function(stack, key, value, level, type){
+		this.stack = stack;
+		this.key = key;
+		if(type != 'object' && type !='array'){
+			this.value = value;
+		}else{
+			this.parentRep = true;
+			this.showDetails = true;
+		}
+		this.level = level;
+		this.type = type;
+	},
+	
+	
+    type: 'IREMapUIHelper'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-05-18 20:43:39</sys_created_on>
+        <sys_id>87a3c2b62fdb9410a8ce2b5df699b6b4</sys_id>
+        <sys_mod_count>39</sys_mod_count>
+        <sys_name>IREMapUIHelper</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_include_87a3c2b62fdb9410a8ce2b5df699b6b4</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-06-16 20:52:33</sys_updated_on>
+    </sys_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sys_script_include_87a3c2b62fdb9410a8ce2b5df699b6b4</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;x_156954_payload_m.IREMapUIHelper&lt;/api_name&gt;&lt;caller_access/&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description/&gt;&lt;name&gt;IREMapUIHelper&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var IREMapUIHelper = Class.create();
+IREMapUIHelper.prototype = {
+    initialize: function() {
+    },
+	
+	getReferenceTable: function(table, element){
+		var gr = new GlideRecord("sys_dictionary");
+		gr.addQuery("name", table);
+		gr.addQuery("element", element);
+		gr.query();
+		if (gr.next()) {
+			if(gr.reference){
+				return gr.reference.name + '';
+			}
+		}
+	},
+	
+	analyzePayload: function(payload){
+		try{
+			var obj = JSON.parse(payload);
+			var keyObj = this.scanObject(obj, 0);
+			var array = this.polishObj(keyObj);
+			return array;
+		}catch(e){
+			gs.addErrorMessage(JSON.stringify(e));
+		}
+	},
+
+	polishObj: function(keyObj){
+		var returnArray = [];
+		var lowestLevel;
+		for(var key in keyObj){
+			if(!lowestLevel &amp;&amp; lowestLevel != 0){
+				lowestLevel = keyObj[key].level;
+			}else{
+				if(keyObj[key].level &lt; lowestLevel){
+					lowestLevel = keyObj[key].level;
+				}
+			}
+			returnArray.push(keyObj[key]);
+		}
+		if(lowestLevel){
+			returnArray = this.reduceLevels(returnArray, lowestLevel);
+		}
+		return returnArray;
+	},
+
+	reduceLevels: function(array, lowestLevel){
+		for(var i = 0; i &lt; array.length; i++){
+			array[i].level =  array[i].level - lowestLevel;
+		}
+		return array;
+	},
+
+	scanObject: function(obj, level, stack, arrayObj){
+		if(!arrayObj){
+			arrayObj = {};
+		}
+		
+		for(var key in obj){
+			var newStack = this.getStack(key, stack);
+			var type = this.getType(obj[key]);
+			if(type === 'object'){
+				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type);
+				arrayObj = this.scanObject(obj[key], level + 1, newStack, arrayObj);
+			}else if(type === 'array'){
+				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type);
+				arrayObj = this.scanArray(obj[key], level + 1, newStack, arrayObj);
+			}else{
+				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type);
+			}
+		}
+		return arrayObj;
+	},
+
+	scanArray: function(array, level, stack, arrayObj){
+		for(var i = 0; i &lt; array.length; i++){
+			arrayObj = this.scanObject(array[i], level, stack, arrayObj);
+		}
+		return arrayObj;
+	},
+
+	getStack: function(key, stack){
+		if(!stack){
+			stack = key;
+		}else{
+			stack = stack + '.' + key;
+		}
+		return stack;
+	},
+
+
+	getType: function(val) {
+		var type = typeof val;
+		if (type === 'object') {
+			if (Array.isArray(val)) {
+				return 'array';
+			}
+		}
+		return type;
+    },
+	
+	constructSimplifiedMap: function(viewModel){
+		for(var i = 0; i &lt; viewModel.items.length; i++){
+			var table = viewModel.items[i];
+			delete table.className.displayValue;
+			delete table.className.table;
+			delete table.compress;
+
+			table.values = this.simplifiyValues(table.values);
+		}			
+		if(viewModel.relations &amp;&amp; viewModel.relations.length &gt; 0){
+			viewModel.relations = this.simplifyRelations(viewModel.relations);	
+		}
+		return viewModel;
+	},
+
+	simplifiyValues: function(valuesArray){
+		for(var i = 0; i &lt; valuesArray.length; i++){
+			var value = valuesArray[i];
+			delete value.compress;
+			delete value.column.displayValue;
+			delete value.column.table;
+			delete value.column.parentTable;
+			if(!value.column.referenceField.value){
+				delete value.column.referenceField;
+			}
+
+			delete value.objectKey.hidden;
+			delete value.objectKey.level;
+			delete value.objectKey.type;
+			delete value.objectKey.type;
+			delete value.objectKey.value;
+			delete value.objectKey.key;
+
+		}
+		return valuesArray;
+	},
+
+	simplifyRelations: function(relationsArray){
+		for(var i = 0; i &lt; relationsArray.length; i++){
+			var relationship = relationsArray[i];
+			delete relationship.parent.displayValue;
+			delete relationship.child.displayValue;
+			delete relationship.child.type;
+			delete relationship.type.displayValue;
+			delete relationship.compress;
+		}
+		return relationsArray;
+	},
+	
+	PayloadElement: function(stack, key, value, level, type){
+		this.stack = stack;
+		this.key = key;
+		if(type != 'object' &amp;&amp; type !='array'){
+			this.value = value;
+		}else{
+			this.parentRep = true;
+			this.showDetails = true;
+		}
+		this.level = level;
+		this.type = type;
+	},
+	
+	
+    type: 'IREMapUIHelper'
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;erik.anderson&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2020-05-18 20:43:39&lt;/sys_created_on&gt;&lt;sys_id&gt;87a3c2b62fdb9410a8ce2b5df699b6b4&lt;/sys_id&gt;&lt;sys_mod_count&gt;39&lt;/sys_mod_count&gt;&lt;sys_name&gt;IREMapUIHelper&lt;/sys_name&gt;&lt;sys_package display_value="Payload Mapper" source="x_156954_payload_m"&gt;cf93c6762fdb9410a8ce2b5df699b624&lt;/sys_package&gt;&lt;sys_policy&gt;read&lt;/sys_policy&gt;&lt;sys_scope display_value="Payload Mapper"&gt;cf93c6762fdb9410a8ce2b5df699b624&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_87a3c2b62fdb9410a8ce2b5df699b6b4&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;erik.anderson&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2020-06-16 20:52:33&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>2043698902</payload_hash>
+        <record_name>IREMapUIHelper</record_name>
+        <reverted_from/>
+        <source>51e34eb62fdb9410a8ce2b5df699b625</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:13:17</sys_created_on>
+        <sys_id>9ae38eb62fdb9410a8ce2b5df699b62c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>174acef4a790000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:13:17</sys_updated_on>
+        <type>Script Include</type>
+        <update_guid>5ae38eb6c4db9410ec8e14d3a063042c</update_guid>
+        <update_guid_history>5ae38eb6c4db9410ec8e14d3a063042c:2043698902</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:32:08</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_include">sys_script_include</sys_db_object>
+        <sys_id>15ec14b32c69480e8f271400bdc29504</sys_id>
+        <sys_metadata>87a3c2b62fdb9410a8ce2b5df699b6b4</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IREMapUIHelper</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sys_script_include_87a3c2b62fdb9410a8ce2b5df699b6b4</sys_update_name>
+        <sys_update_version display_value="sys_script_include_87a3c2b62fdb9410a8ce2b5df699b6b4">9ae38eb62fdb9410a8ce2b5df699b62c</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:32:08</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

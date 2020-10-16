@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_156954_payload_m.MapManager</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>MapManager</name>
+        <script><![CDATA[var MapManager = Class.create();
+MapManager.prototype = {
+    initialize: function() {
+    },
+	
+	getMaps: function(){
+		var array = [];
+		var gr = new GlideRecord("sys_properties");
+		gr.addQuery("description", "PayloadMap");
+		gr.query();
+		while(gr.next()) {
+			var obj = {
+				suffix: gr.suffix + '',
+				name: gr.name + '',
+				value: gr.value + ''
+			};
+			array.push(obj);
+		}
+		return array;
+	},
+	
+	saveMap: function(mapName, map){
+		if(mapName && map){
+			var mapString = JSON.stringify(map);
+			gs.setProperty(mapName, mapString);
+			return true;
+		}else{
+			return false;
+		}
+	},
+
+    type: 'MapManager'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-10-02 17:59:08</sys_created_on>
+        <sys_id>57b1e7a22f2bd050a8ce2b5df699b65f</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>MapManager</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_include_57b1e7a22f2bd050a8ce2b5df699b65f</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-10-06 12:18:02</sys_updated_on>
+    </sys_script_include>
+</record_update>

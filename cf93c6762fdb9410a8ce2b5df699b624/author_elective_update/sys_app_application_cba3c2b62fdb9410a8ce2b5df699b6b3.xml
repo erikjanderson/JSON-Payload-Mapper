@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_application">
+    <sys_app_application action="DELETE">
+        <active>true</active>
+        <category display_value="Custom Applications">e0355b31ef303000a61d5a3615c0fb78</category>
+        <description/>
+        <device_type>browser</device_type>
+        <hint/>
+        <name/>
+        <order>100</order>
+        <roles/>
+        <sys_class_name>sys_app_application</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-05-14 13:56:54</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>cba3c2b62fdb9410a8ce2b5df699b6b3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Payload Mapper</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_app_application_cba3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-05-14 13:56:54</sys_updated_on>
+        <title>Payload Mapper</title>
+        <view_name/>
+    </sys_app_application>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sys_app_application_cba3c2b62fdb9410a8ce2b5df699b6b3</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_application"><sys_app_application action="INSERT_OR_UPDATE"><active>true</active><category display_value="Custom Applications">e0355b31ef303000a61d5a3615c0fb78</category><description/><device_type>browser</device_type><hint/><name/><order>100</order><roles/><sys_class_name>sys_app_application</sys_class_name><sys_created_by>erik.anderson</sys_created_by><sys_created_on>2020-05-14 13:56:54</sys_created_on><sys_domain>global</sys_domain><sys_domain_path>/</sys_domain_path><sys_id>cba3c2b62fdb9410a8ce2b5df699b6b3</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Payload Mapper</sys_name><sys_overrides/><sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package><sys_policy/><sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope><sys_update_name>sys_app_application_cba3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name><sys_updated_by>erik.anderson</sys_updated_by><sys_updated_on>2020-05-14 13:56:54</sys_updated_on><title>Payload Mapper</title><view_name/></sys_app_application></record_update>]]></payload>
+        <payload_hash>-954535397</payload_hash>
+        <record_name>Payload Mapper</record_name>
+        <reverted_from/>
+        <source>51e34eb62fdb9410a8ce2b5df699b625</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:13:16</sys_created_on>
+        <sys_id>0ee38eb62fdb9410a8ce2b5df699b604</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>174acef484b0000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:13:16</sys_updated_on>
+        <type>Application Menu</type>
+        <update_guid>cae38eb6e5db94103b84b9beace2ab04</update_guid>
+        <update_guid_history>cae38eb6e5db94103b84b9beace2ab04:-954535397</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="Payload Mapper">6a380efa2fdb9410a8ce2b5df699b605</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:32:08</sys_created_on>
+        <sys_db_object display_value="" name="sys_app_application">sys_app_application</sys_db_object>
+        <sys_id>109a7cf963e244938a68c5425e4ec811</sys_id>
+        <sys_metadata>cba3c2b62fdb9410a8ce2b5df699b6b3</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Payload Mapper</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sys_app_application_cba3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name>
+        <sys_update_version display_value="sys_app_application_cba3c2b62fdb9410a8ce2b5df699b6b3">0ee38eb62fdb9410a8ce2b5df699b604</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:32:08</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
