@@ -21,6 +21,10 @@ PayloadScanner.prototype = {
 			}else{
 				obj = payload;
 			}
+			obj = new PreProcessor().process(obj);
+			// stringify and then parse object to remove any weird GlideRecord nesting
+			var tempString = JSON.stringify(obj);
+			obj = JSON.parse(tempString);
 			var keyObj = this.scanObject(obj, 0);
 			var array = this.polishObj(keyObj);
 			return array;
@@ -73,7 +77,6 @@ PayloadScanner.prototype = {
 		return stack;
 	},
 
-
 	getType: function(val) {
 		var type = {};
 		type.val = typeof val;
@@ -89,20 +92,21 @@ PayloadScanner.prototype = {
 		}
 		return type;
     },
+	
 	PayloadElement: function(stack, key, value, level, type, includeSampleVal){
 		this.stack = stack;
 		this.key = key;
 		var tempVal = '';
 		if(type != 'object' && type !='array'){
 			tempVal = value;
-			if(tempVal.length){
+			if(tempVal && tempVal.length){
 				this.maxLength = tempVal.length + ( tempVal.length * 0.3);
 			}else{
 				this.maxLength = 40;
 			}
 		}else if((type == 'object' || type == 'array')){
 			tempVal = JSON.stringify(value);
-			if(tempVal.length > 2){
+			if(tempVal && tempVal.length > 2){
 				this.maxLength = tempVal.length + ( tempVal.length * 0.5);
 			}else{
 				this.maxLength = 500;
@@ -119,7 +123,7 @@ PayloadScanner.prototype = {
 			this.parentRep = true;
 			this.showDetails = true;
 		}
-		this.active = true;
+		this.active = false;
 		this.level = level;
 		this.type = type;
 	},
@@ -130,13 +134,13 @@ PayloadScanner.prototype = {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-09-20 19:46:34</sys_created_on>
         <sys_id>a27b4ebe2fdb9410a8ce2b5df699b602</sys_id>
-        <sys_mod_count>9</sys_mod_count>
+        <sys_mod_count>13</sys_mod_count>
         <sys_name>PayloadScanner</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sys_script_include_a27b4ebe2fdb9410a8ce2b5df699b602</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2020-09-22 18:52:19</sys_updated_on>
+        <sys_updated_on>2020-11-05 16:26:59</sys_updated_on>
     </sys_script_include>
 </record_update>
