@@ -942,7 +942,7 @@ button.cancel {&#13;
 
     if (input) {
         //var uiHelper = new IREMapUIHelper();
-        var map = new Map();
+        var map = new PayloadMap();
         var payloadScanner = new PayloadScanner();
 
         if (input.action === 'analyzePayload' && input.payload) {
@@ -984,14 +984,14 @@ button.cancel {&#13;
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-05-14 13:51:19</sys_created_on>
         <sys_id>f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_id>
-        <sys_mod_count>964</sys_mod_count>
+        <sys_mod_count>967</sys_mod_count>
         <sys_name>Mapping Helper</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy/>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sp_widget_f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2020-11-05 16:33:57</sys_updated_on>
+        <sys_updated_on>2020-11-09 15:35:26</sys_updated_on>
         <template><![CDATA[<div>
 	<!--<label>{{c.ireModel}}</label>-->
 	<!--<div class="col-sm-12">
@@ -1035,7 +1035,7 @@ button.cancel {&#13;
 			<!--<input type="input" class="form-control" ng-model="c.searchFilter" id="search" placeholder="Search">-->
 			<div style="padding-bottom: 4px;">
 				
-				<h3 class="selectedProperty">{{c.selectedMapName.split('.')[1]}}</h3>
+				<h3 class="selectedProperty">{{c.selectedMapName.split('.')[1] || 'No Map Selected'}}</h3>
 				
 				
 			</div>
