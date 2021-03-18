@@ -2,13 +2,13 @@
     <sys_script_include action="INSERT_OR_UPDATE">
         <access>public</access>
         <active>true</active>
-        <api_name>x_156954_payload_m.PayloadFlattener</api_name>
+        <api_name>x_156954_payload_m.PayloadProcessor</api_name>
         <caller_access/>
         <client_callable>false</client_callable>
         <description/>
-        <name>PayloadFlattener</name>
-        <script><![CDATA[var PayloadFlattener = Class.create();
-PayloadFlattener.prototype = {
+        <name>PayloadProcessor</name>
+        <script><![CDATA[var PayloadProcessor = Class.create();
+PayloadProcessor.prototype = {
      initialize: function() {
 		this.appScope = gs.getCurrentScopeName();
     },
@@ -220,19 +220,19 @@ PayloadFlattener.prototype = {
 		return sp;
 	},
 
-    type: 'PayloadFlattener'
+    type: 'PayloadProcessor'
 };]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-09-20 19:47:17</sys_created_on>
         <sys_id>94ab0abe2fdb9410a8ce2b5df699b625</sys_id>
-        <sys_mod_count>16</sys_mod_count>
-        <sys_name>PayloadFlattener</sys_name>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>PayloadProcessor</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sys_script_include_94ab0abe2fdb9410a8ce2b5df699b625</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2020-10-06 12:34:30</sys_updated_on>
+        <sys_updated_on>2021-03-16 17:08:04</sys_updated_on>
     </sys_script_include>
 </record_update>

@@ -14,15 +14,15 @@
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-05-14 13:49:32</sys_created_on>
         <sys_id>b01a4a7e2fdb9410a8ce2b5df699b6d5</sys_id>
-        <sys_mod_count>4</sys_mod_count>
+        <sys_mod_count>5</sys_mod_count>
         <sys_name>Mapping Helper - Container 1</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy/>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sp_container_b01a4a7e2fdb9410a8ce2b5df699b6d5</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2020-09-20 20:08:58</sys_updated_on>
+        <sys_updated_on>2021-03-18 14:47:48</sys_updated_on>
         <title/>
-        <width>container</width>
+        <width>container-fluid</width>
     </sp_container>
 </record_update>

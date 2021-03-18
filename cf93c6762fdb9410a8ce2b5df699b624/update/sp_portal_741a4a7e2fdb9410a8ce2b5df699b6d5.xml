@@ -2,6 +2,7 @@
     <sp_portal action="INSERT_OR_UPDATE">
         <css_variables/>
         <default>false</default>
+        <enable_ais>false</enable_ais>
         <hide_portal_name>false</hide_portal_name>
         <homepage/>
         <icon/>
@@ -14,6 +15,8 @@
         <sc_catalog/>
         <sc_catalog_page/>
         <sc_category_page/>
+        <search_application/>
+        <search_results_configuration/>
         <sp_chat_queue/>
         <sp_rectangle_menu/>
         <sqanda_knowledge_base/>

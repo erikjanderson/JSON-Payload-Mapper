@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_fix">
+    <sys_script_fix action="INSERT_OR_UPDATE">
+        <before>false</before>
+        <description/>
+        <name>(Sample) - Flatten a Complex Object</name>
+        <record_for_rollback>false</record_for_rollback>
+        <script><![CDATA[var object = {
+	summary: {
+		firstName: "John",
+		lastName: "Doe",
+		age: 40
+	},
+	id: "123",
+	devices: [
+		{
+			type: "iPhone X",
+			color: "black"
+		},
+		{
+			type: "Macbook pro 16",
+			color: "silver"
+		}
+	]
+};
+
+//Call the payload flattener class and pass in the propertyName to initialize the map to be used for processing
+var flattener = new PayloadFlattener("x_156954_payload_m.PayloadMap");
+
+//Set the type of the base level object
+flattener.setPrimaryTypeName("User");
+
+//process and get the results in an array;
+var result = flattener.process(object);
+
+//If you have an array of data to process call the process array function instead
+//var reult = flattener.processArray(object);
+
+]]></script>
+        <sys_class_name>sys_script_fix</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-03-16 17:22:58</sys_created_on>
+        <sys_id>e41b49372f766090a8ce2b5df699b682</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>(Sample) - Flatten a Complex Object</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_fix_e41b49372f766090a8ce2b5df699b682</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-03-18 18:44:26</sys_updated_on>
+        <unloadable>false</unloadable>
+    </sys_script_fix>
+</record_update>
