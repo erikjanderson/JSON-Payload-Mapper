@@ -2,22 +2,10 @@
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
         <client_script><![CDATA[function ($scope) {
-    /* widget controller */
     var c = this;
     c.analyzePayload = analyzePayload;
-    c.addNewTable = addNewTable;
-    c.addNewColumn = addNewColumn;
-    c.addNewRelationship = addNewRelationship;
-    c.deleteColumn = deleteColumn;
-    c.deleteTable = deleteTable;
-    c.deleteRelationship = deleteRelationship
-    c.allColumnsCompressed = allColumnsCompressed
-    c.compressOrExpandAllColumns = compressOrExpandAllColumns;
-    c.buildRelationshipQuery = buildRelationshipQuery;
     c.saveMap = saveMap;
-    c.testIandR = testIandR;
     c.loadMap = loadMap;
-    c.copyKeyArrayToClipboard = copyKeyArrayToClipboard;
     c.setPrimaryToggle = setPrimaryToggle;
     c.selectExistingMap = selectExistingMap;
     c.loadSavedMap = loadSavedMap;
@@ -41,59 +29,7 @@ function	init(){
 		$('#' + id).collapse('toggle');
 	}
 
-
-
-    // tracks changes on <sn-record-picker> records
-    $scope.$on("field.change", function (evt, params) {
-        var field = params.field;
-        if (field.table === 'sys_dictionary') {
-            if (field.referenceTable) {
-                field.referenceTable = ''
-                field.referenceField = {
-                    displayValue: '',
-                    value: ''
-                }
-            }
-            field.referenceTable = getReferenceTable(field);
-        }
-        if (field.type === 'child') {
-            if (field.referenceField) {
-                field.referenceField = {
-                    displayValue: '',
-                    value: ''
-                }
-            }
-        }
-        //console.log(field)
-    })
-
-    function copyKeyArrayToClipboard() {
-        if (c.keyArray && c.keyArray.length > 0) {
-            //var str = JSON.stringify(c.keyArray);
-            var json = angular.toJson(c.keyArray);
-            copyToClipboard(json);
-        }
-    }
-
-    function copyToClipboard(text) {
-
-        // create temp element
-        var copyElement = document.createElement("span");
-        copyElement.appendChild(document.createTextNode(text));
-        copyElement.id = 'tempCopyToClipboard';
-        angular.element(document.body.append(copyElement));
-
-        // select the text
-        var range = document.createRange();
-        range.selectNode(copyElement);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-
-        // copy & cleanup
-        document.execCommand('copy');
-        window.getSelection().removeAllRanges();
-        copyElement.remove();
-    }
+    
 
     function selectExistingMap() {
         var input = {
@@ -166,7 +102,6 @@ function	init(){
         element.active = !element.active;
     }
 
-    //executed if a column is a reference field and returns the reference table name
     function getReferenceTable(field) {
         var input = {
             action: 'getReferenceTable',
@@ -175,28 +110,10 @@ function	init(){
         };
         c.server.get(input).then(function (response) {
             if (response && response.data) {
-                //console.log(response.data.referenceTable);
                 field.referenceTable = response.data.referenceTable;
-                //console.log(field);
             }
         })
     }
-
-    //unused init function so far
-    /*init();
-      function init(){
-          var input = {
-                  action: 'init'
-              }
-              c.server
-                  .get(input)
-                  .then(function(response){
-                  if(response && response.data){
-  
-                  }
-              })
-      }*/
-
     function analyzePayload(payload) {
         var input = {
             action: 'analyzePayload',
@@ -234,16 +151,6 @@ function	init(){
             }
         }
     }
-
-    /*function mergeKeyArrays(oldKeyArray, newKeyArray) {
-        for (var i = 0; i < oldKeyArray.length; i++) {
-            var matchIndex = findMatchIndex(oldKeyArray[i].stack, newKeyArray);
-            if ((matchIndex != false || matchIndex === 0) && newKeyArray[matchIndex]) {
-                newKeyArray[matchIndex] = oldKeyArray[i];
-            }
-        }
-        return newKeyArray;
-    }*/
 	
 	function mergeKeyArrays(oldKeyArray, newKeyArray) {
         for (var i = 0; i < oldKeyArray.length; i++) {
@@ -288,123 +195,6 @@ function	init(){
         });
     }
 
-
-    function testIandR() {
-        var input = {
-            action: 'testIandR',
-            sampleInput: c.previewInput
-        }
-        c.server
-            .get(input)
-            .then(function (response) {
-                if (response && response.data && response.data.previewOutput) {
-                    c.previewOutput = response.data.previewOutput;
-                }
-            });
-    }
-
-    function addNewTable() {
-        c.ireModel.items.push({
-            className: {
-                value: '',
-                displayValue: '',
-                table: 'cmdb_ci_computer'
-            },
-            values: []
-        })
-    }
-
-
-
-    function deleteTable(tableArray, index) {
-        tableArray.splice(index, 1);
-    }
-
-    function addNewColumn(table, overrideObjectKey) {
-        var obj = {
-            column: {
-                value: '',
-                displayValue: '',
-                table: 'sys_dictionary',
-                parentTable: table.className.value,
-                referenceField: {
-                    value: '',
-                    displayValue: ''
-                }
-            },
-            objectKey: ''
-        };
-        if (overrideObjectKey) {
-            obj.objectKey = overrideObjectKey;
-        }
-        table.values.unshift(obj);
-    }
-
-    function deleteColumn(columnArray, index) {
-        columnArray.splice(index, 1);
-    }
-
-    function addNewRelationship() {
-        var obj = {
-            "parent": {
-                "displayValue": "",
-                "value": ""
-            },
-            "child": {
-                "displayValue": "",
-                "value": "",
-                "type": "child",
-                "referenceField": {
-                    "displayValue": "",
-                    "value": ""
-                }
-            },
-            "type": {
-                "displayValue": "",
-                "value": ""
-            }
-        }
-        c.ireModel.relations.unshift(obj);
-    }
-
-    function deleteRelationship(relationshipArray, index) {
-        relationshipArray.splice(index, 1);
-    }
-
-    function addPayloadKeyToIREModel(sourceIndex, targetIndex) {
-        //splits the column id index[0] is the table array index index[1] is the column index within the table element
-        var targetIndexArray = targetIndex.split('.');
-        if (targetIndexArray.length > 1) {
-            if (targetIndexArray[1] === 'new') {
-                addNewColumn(c.ireModel.items[targetIndexArray[0]], copyObj(c.keyArray[sourceIndex]));
-            } else {
-                c.ireModel.items[targetIndexArray[0]].values[targetIndexArray[1]].objectKey = copyObj(c.keyArray[sourceIndex]);
-            }
-
-        }
-    }
-
-    function copyObj(obj) {
-        var newObj = {};
-        for (var key in obj) {
-            newObj[key] = obj[key];
-        }
-        return newObj;
-    }
-
-
-    function isDescendant(parent, child) {
-        var node = child.parentNode;
-        while (node != null) {
-            //console.log(node.id);
-            if (node == parent) {
-                return true;
-            }
-            node = node.parentNode;
-        }
-        return false;
-    }
-
     $scope.$watch("c.searchFilter", function (newValue, oldValue) {
         for (var i = 0; i < c.keyArray.length; i++) {
             var element = c.keyArray[i];
@@ -444,49 +234,30 @@ function	init(){
         }
         return array;
     }
+	
+	function copyToClipboard(text) {
 
-    function allColumnsCompressed(table) {
-        for (var i = 0; i < table.values.length; i++) {
-            var column = table.values[i];
-            if (!column.compress) {
-                return false;
-            }
-        }
-        return true;
+        // create temp element
+        var copyElement = document.createElement("span");
+        copyElement.appendChild(document.createTextNode(text));
+        copyElement.id = 'tempCopyToClipboard';
+        angular.element(document.body.append(copyElement));
+
+        // select the text
+        var range = document.createRange();
+        range.selectNode(copyElement);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        // copy & cleanup
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        copyElement.remove();
     }
-
-    function compressOrExpandAllColumns(table, compress) {
-        for (var i = 0; i < table.values.length; i++) {
-            var column = table.values[i];
-            column.compress = compress;
-        }
-    }
-
-    function buildRelationshipQuery() {
-        var query = '';
-        //name=sys_rest_message_fn^ORname=x_snc_sn_bridge_map
-        for (var i = 0; i < c.ireModel.items.length; i++) {
-            var table = c.ireModel.items[i].className.value;
-            if (!query) {
-                query = 'name=' + table;
-            } else {
-                query = query + '^ORname=' + table;
-            }
-        }
-        return query;
-    }
-
-
-
-
-    // end drag and drop function
 
 }]]></client_script>
         <controller_as>c</controller_as>
-        <css>/*div {
-    border-style: solid;
-    border-width: 1px;
-}*/
+        <css>
 
 textarea {
 	  border-radius: 4px;
@@ -495,24 +266,17 @@ textarea {
 
 .paneContainer {
   	padding: 0px 5px;
-    /* color: #632f2f; */
     font-size: 15px;
   height: 100%;
-}
-
-.columnReference {
-  margin-left: 26px;
-  //color: white;
-}
-
-.columnReference p {
-	margin: 4px 4px 4px 0px;	
+  display: grid;
+  grid-row-gap: 5px;
 }
 
 .keyArrayControls{
 		border-radius: 8px;
     background-color: #dadada;
-    margin-bottom: 8px;
+  	grid-row: 1;
+    grid-column: 1;
 }
 .controls {
 	display: flex;
@@ -520,100 +284,37 @@ textarea {
   border-radius: 8px 8px 0px 0px;
 }
 
-.tableModel {
-	  margin: 5px 0px 10px 0px;
-    padding: 6px;
-    background-color: #bdc0c4;;
-    border-radius: 4px;
-
-}
-
-.are-you-sure{
-    background-color: #ad2323;
-    border-radius: 4px;
-    padding: 0px 0px 0px 7px;
-  	margin: -6px -6px 0px;
-  	color: #f5f5f5;
-}
-.are-you-sure p {
-	font-size: 20px
-}
-
-.valueArray {
-	margin-left: 20px;
-}
-
-.columnElement {
-    padding-top: 18px;
-    background-color: white;
-    border-color: white;
-    padding-bottom: 5px;
-    border-style: solid;
-    border-width: 2px;
-    border-radius: 5px;
-    padding: 10px 8px 10px 8px;
-    margin-top: 10px;
-    font-size: 15px;
-}
-
-
-
-.addNewColumn {
-		padding-top: 5px;
-    border-color: white;
-    padding-bottom: 5px;
-    border-style: dashed;
-    border-width: 2px;
-    border-radius: 5px;
-    padding: 6px;
-    margin-top: 10px;
-    text-align: center;
-}
-
-.dropBox {
-	  border-width: 2px;
-    border-style: dashed;
-    height: 35px;
-    border-radius: 6px;
-  	text-align: center;
-}
-
-.dropBox label {
-	margin-top: 5px;
-}
-
-.payloadArrayPane {
+.contentPane {
     border-style: solid;
     border-radius: 8px;
     background-color: #dadada;
     border-color: #dadada;
-    height: 88%;
+    height: 100%;
     overflow: auto;
 }
 
-.payloadArrayPane.previewPane {
+.payloadSelectList {
+	grid-column: 1;
+  grid-row: 2 / 35;
+}
+
+.contentPane.previewPane {
 	border: none;
   margin: 0px 0px 0px 0px;
   height: 100%
 }
 
-.customScroll::-webkit-scrollbar-track
-{
-  
- //   background-color: #dadada;
-}
+
 
 .customScroll::-webkit-scrollbar
 {
     width: 10px;
   	height: 10px;
-   // background-color: #dadada;
 }
 
 .customScroll::-webkit-scrollbar-thumb
 {
     background-color: #959696;;
-    //border: 2px solid #555555;
   	border-radius: 5px;
 }
 
@@ -669,130 +370,6 @@ textarea {
   height:31px
 }
 
-.slide {
-	//margin-left: 10px;
-  -webkit-transition:max-height ease-out .5s;
-  transition:max-height ease-out .5s;
-  overflow: hidden;
-  //max-height:0;
-  max-height: 255px;
-  //max-height: 100%;
-}
-
-
-/*.collapsing {
-	overflow: hidden;
-  transition: height 0.35s ease;
-  position: relative;
-  height: 0;
-}
-
-.collapse {
- display: none;
-}
-
-.collapse.in {
-	display: block !important;
-  height: 100%;
-}*/
-
-.slide.elDetail {
-	max-height: 75px;
-  -webkit-transition:max-height ease-in .2s;
-  transition:max-height ease-in .2s;
-}
-
-
-
-.slide.ng-hide {
-  max-height: 0;
-}
-
-.slide.ng-hide-add,
-.slide.ng-hide-remove{
-  display:block!important;
-  overflow: hidden;
-}
-
-.elementDetail label {
-	width: 100%;
-  margin-left: 10px;
-}
-
-.over {
-	border-style: solid;
-  border-color: #247ba0;
-}
-
-.close-x {
-    float: right;
-    margin-right: 5px;
-    margin-top: 4px;
-    font-size: 12px;
-}
-
-.close-x:hover {
-	opacity:0.7;
-}
-
-.clear {
-    float: right;
-    margin-right: 5px;
-    
-}
-
-.clear:hover{
-	cursor: pointer;
-  text-decoration: underline;
-}
-
-button.confirm {
-		background-color: #247ba0;
-    width: 69px;
-}
-
-button.cancel {
-		background-color: #6d6d6d;
-    width: 69px;
-}
-
-.confirm-buttons{
-		padding-bottom: 6px;
-}
-
-
-.addNew {
-		font-size: 17px;
-    margin-top: 7px;
-  	margin-bottom: 0px;
-  	color: #247ba0;
-}
-
-.addNew:hover{
-	cursor: pointer;
-  //color: #d4d4d4 !important;
-  opacity: 0.7;
-}
-
-.addNew .fa-plus {
-		border-style: solid;
-    border-width: 1px;
-    padding: 2px 3px 3px 3px;
-    border-radius: 18px;
-    height: 21px;
-    width: 21px;
-}
-
-.outer-add {
-	text-align: center;
-}
-
-.column-compress-carrot {
-	  float: left;
-    margin-top: 12px;
-}
-
-
 /* Style the buttons inside the tab */
 .tab {
   padding: 0px;
@@ -839,46 +416,9 @@ button.cancel {
   background-color: #ccc;
 }
 
-/* Style the tab content */
-.tabcontent {
-  //display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-}
-
-#previewModal pre {
-	max-height: 78vh;
-}
-
-#previewModal .modal-header {
-	 padding-bottom: 3px;
-}
-
-.testButton {
-		width: 100%;
-    border-radius: 2px;
-    background-color: #5a7f71;
-    border-color: #80b4a0;
-    color: white;
-}
-
-.testButton:hover{
-	opacity: 90%;
-}
-
-#previewModal pre.halfHeight {
-	max-height: 39vh;
-}
-
 .analyze-new-payload{
 	  text-align: center;
     margin-top: 42vh;
-}
-
-#search {
-  width: 79%;
-  display: unset;
 }
 
 .btn.ireButton{
@@ -1046,25 +586,6 @@ button.cancel {
 					var processor = new PayloadProcessor();
 					data.previewedOutput = processor.flattenPayload(input.keyArray, input.payloadParsed);
 				}
-
-
-        /*if(input.action === 'getReferenceTable'){
-        	data.referenceTable = uiHelper.getReferenceTable(input.table, input.element);
-        }
-		
-        if(input.action === 'previewMap' && input.map && input.payload){
-        	
-        	var simplifiedModel = uiHelper.constructSimplifiedMap(input.map);
-        	data.simplifiedModel = simplifiedModel;
-        	var relationalMap = ireMap.initializeMap(input.map);
-        	var ireObj = ireMap.processObj(JSON.parse(input.payload), 'ServiceNow');
-        	data.previewInput = ireObj;
-        }
-		
-        if(input.action === 'testIandR' && input.sampleInput){
-        	var output = ireMap.importPayload(input.sampleInput, 'ServiceNow');
-        	data.previewOutput = JSON.parse(output);
-        }*/
     }
 
 
@@ -1075,23 +596,15 @@ button.cancel {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-05-14 13:51:19</sys_created_on>
         <sys_id>f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_id>
-        <sys_mod_count>1081</sys_mod_count>
+        <sys_mod_count>1099</sys_mod_count>
         <sys_name>Mapping Helper</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy/>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sp_widget_f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-03-18 19:13:25</sys_updated_on>
+        <sys_updated_on>2021-03-24 22:01:03</sys_updated_on>
         <template><![CDATA[<div>
-    <!--<label>{{c.ireModel}}</label>-->
-    <!--<div class="col-sm-12">
-        <button type="button" class="btn btn-success" ng-click="c.previewMap()" ng-disabled="!c.payload || !c.ireModel">
-            Preview Map
-        </button>
-    </div>-->
-
-    <!--<label>{{c.ireModel}}</label>-->
   <div style="height: 98vh">
     <div class="paneContainer col-sm-7">
         <div class="keyArrayControls">
@@ -1119,11 +632,6 @@ button.cancel {
                 </div>
             </div>
             <div class="panel panel-default advancedOptions">
-                <!--<div class="panel-heading" ng-click="c.toggleCollapse('advanced_options');">
-          <h4 class="panel-title">
-            Advanced
-          </h4>
-        </div>-->
                 <div id="advanced_options" class="panel-collapse collapse">
                     <div class="panel-body">
                       
@@ -1140,9 +648,6 @@ button.cancel {
                 </div>
             </div>
 
-
-
-            <!--<input type="input" class="form-control" ng-model="c.searchFilter" id="search" placeholder="Search">-->
             <div style="padding-bottom: 4px;">
 
                 <h3 class="selectedProperty">{{c.selectedMapName.split('.')[1] || 'No Map Selected'}}</h3>
@@ -1150,18 +655,13 @@ button.cancel {
 
             </div>
 
-            <!--<div class="selectedProperty">
-					{{c.selectedMapName.split('.')[1]}}
-				</div>-->
-
 
         </div>
-        <div class="col-sm-12 payloadArrayPane customScroll">
+        <div class="col-sm-12 contentPane payloadSelectList customScroll">
             <div class="col-sm-12 analyze-new-payload" ng-if="!c.keyArray">
                 <h3>
                     Select a map from the system properties list that you would like to edit.
                 </h3>
-                <!--<button type="button" class="btn ireButton" data-toggle="modal" ng-click="c.loadModalType = 'payload'"data-target="#priamryModal">New Map From Payload</button>-->
                 <button type="button" class="btn ireButton" data-toggle="modal" ng-click="c.selectExistingMap()">Edit
                     Select Map</button>
 
@@ -1185,17 +685,10 @@ button.cancel {
                                     <i class="fa fa-minus" style="font-size: 22px; margin: 0px 3px 0px 3px;"
                                         ng-if="!element.primary"></i>
                                 </button>
-                                <!--<span ng-if="!element.primary" ng-click="element.primary = !element.primary">Set As Pimary</span> -->
-                                <i
-                                    ng-class="{'fa fa-circle-o selectBox' : !element.active , 'fa fa-check-circle-o selectBox' : element.active}"></i>
+                                <i ng-class="{'fa fa-circle-o selectBox' : !element.active , 'fa fa-check-circle-o selectBox' : element.active}"></i>
 
 
                             </div>
-                            <!--<div class="col-sm elementDetail slide elDetail" ng-hide="!element.showDetails">-->
-                            <!--<label><strong>Stack:</strong> {{element.stack}}</label>-->
-                            <!--<label><strong>Value:</strong> {{element.value}}</label>-->
-                            <!--   <label><strong>Type:</strong> {{element.type}}</label>
-                        </div>-->
 
                         </div>
                         <div ng-if="element.parentRep">
@@ -1215,7 +708,7 @@ button.cancel {
         </div>
     </div>
   <div class="paneContainer col-sm-5">
-    <div class="payloadArrayPane previewPane" style ="background-color: #f5f5f5;">
+    <div class="contentPane previewPane" style ="background-color: #f5f5f5;">
     	<div class="tab">
         <button
                 ng-class="{'tablinks selected small' : c.previewPaneType ==='Preview' , 'tablinks small notSelected': c.previewPaneType !== 'Preview'}"
@@ -1230,8 +723,7 @@ button.cancel {
                 <h3>
                     To preview the output, add a sample payload here.
                 </h3>
-                <!--<button type="button" class="btn ireButton" data-toggle="modal" ng-click="c.loadModalType = 'payload'"data-target="#priamryModal">New Map From Payload</button>-->
-                <button type="button" class="btn ireButton" data-toggle="modal" data-target="#priamryModal" data-toggle="modal" ng-click="c.loadModalType = 'payload'">Set Payload</button>
+           <button type="button" class="btn ireButton" data-toggle="modal" data-target="#priamryModal" data-toggle="modal" ng-click="c.loadModalType = 'payload'">Set Payload</button>
 
             </div>
         
@@ -1295,59 +787,11 @@ var result = flattener.process(object);
                 </p>
                 <label ng-repeat="map in c.savedMaps" class="mapList"
                     ng-click="c.loadSavedMap($index)">{{map.suffix}}</label>
-                <!--<textarea style="width: 100%; height: 453px;" ng-model="c.loadMapString"></textarea>-->
             </div>
-            <!--<div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" ng-click="c.loadMap(c.loadMapString)">Load</button>
-            </div>-->
         </div>
 
     </div>
 
-</div>
-
-<div class="modal fade" id="previewModal">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <button type="button" class="btn btn-primary" ng-click="c.copyKeyArrayToClipboard()">
-                    Copy To Clipboard
-                </button>
-                <!--<div class="tab">
-                    <button
-                        ng-class="{'tablinks selected' : c.previewTab ==='Preview' , 'tablinks': c.previewTab !== 'Preview'}"
-                        ng-click="c.previewTab ='Preview'">Map Preview</button>
-                    <button
-                        ng-class="{'tablinks selected' : c.previewTab ==='Input' , 'tablinks': c.previewTab !== 'Input'}"
-                        ng-click="c.previewTab ='Preview'">Sample IRE Input</button>
-                </div>-->
-
-            </div>
-            <div class="modal-body">
-                <!--<div ng-if="c.previewTab === 'Preview'">-->
-                <pre class="customScroll">{{c.keyArray | json}}</pre>
-                <!-- </div>-->
-
-                <!-- <div ng-if="c.previewTab === 'Input'">
-                    <pre
-                        ng-class="{'halfHeight customScroll' : c.previewOutput, 'customScroll': !c.previewOutput}">{{c.previewInput | json}}</pre>
-
-                    <div ng-if="c.previewOutput">
-                        <label>IRE Output</label>
-                        <pre class="customScroll" style="max-height: 39vh">{{c.previewOutput | json}}</pre>
-                    </div>
-
-
-                    <button ng-if="!c.previewOutput" class="btn testButton" ng-click="c.testIandR()">
-                        Test Identify and Reconcile
-                    </button>
-                </div>-->
-
-            </div>
-        </div>
-    </div>
 </div>]]></template>
     </sp_widget>
 </record_update>
