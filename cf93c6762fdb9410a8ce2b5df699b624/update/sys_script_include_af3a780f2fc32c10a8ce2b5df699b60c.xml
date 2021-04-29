@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_156954_payload_m.GenericFlattener</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>GenericFlattener</name>
+        <script><![CDATA[var GenericFlattener = Class.create();
+GenericFlattener.prototype = {
+    initialize: function() {},
+
+    flattenPayload: function(object) {
+        var keyObj = this.flattenObject(object, {}, {});
+        var returnArray = [];
+        for (var key in keyObj) {
+            returnArray.push(keyObj[key]);
+        }
+
+        return returnArray;
+    },
+
+
+    flattenObject: function(object, returnObj, parentIdentifiers, stack, identifier) {
+        if (!identifier) {
+            identifier = gs.generateGUID();
+            if (!stack) {
+                parentIdentifiers["x_internal_resource"] = identifier;
+            } else {
+                parentIdentifiers["x_internal_" + stack] = identifier;
+            }
+        }
+        if (!returnObj[identifier]) {
+            returnObj[identifier] = {};
+            for (var parentId in parentIdentifiers) {
+                returnObj[identifier][parentId] = parentIdentifiers[parentId];
+            }
+        }
+
+
+        var originalStack = stack;
+        for (var key in object) {
+            if (!originalStack) {
+                stack = key.toLowerCase();
+            } else {
+                stack = originalStack + "_" + key.toLowerCase();
+            }
+            var element = object[key];
+            var type = typeof element;
+            if (type === "object") {
+                if (Array.isArray(element)) {
+                    returnObj = this.flattenArray(element, returnObj, parentIdentifiers, stack);
+                } else {
+                    returnObj = this.flattenObject(element, returnObj, parentIdentifiers, stack, identifier);
+                }
+            } else {
+                returnObj[identifier][stack] = element;
+            }
+        }
+
+        delete parentIdentifiers[stack];
+
+        return returnObj;
+    },
+
+
+    flattenArray: function(array, returnObj, parentIdentifiers, stack) {
+        for (var i = 0; i < array.length; i++) {
+            var obj = array[i];
+            returnObj = this.flattenObject(obj, returnObj, parentIdentifiers, stack);
+        }
+        return returnObj;
+    },
+
+    flattenObjectClean: function(object, returnObj, stack) {
+        if (!returnObj) {
+            returnObj = {};
+        }
+        var originalStack = stack;
+        for (var key in object) {
+            if (!originalStack) {
+                stack = key.toLowerCase();
+            } else {
+                stack = originalStack + "_" + key.toLowerCase();
+            }
+            var element = object[key];
+            var type = typeof element;
+            if (type === "object") {
+                if (Array.isArray(element)) {
+                    returnObj[stack] = JSON.stringify(element);
+                } else {
+                    returnObj = flattenObjectClean(element, returnObj, stack);
+                }
+            } else {
+                returnObj[stack] = element;
+            }
+        }
+
+        return returnObj;
+    },
+
+    type: 'GenericFlattener'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-03-26 18:26:25</sys_created_on>
+        <sys_id>af3a780f2fc32c10a8ce2b5df699b60c</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>GenericFlattener</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_include_af3a780f2fc32c10a8ce2b5df699b60c</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-04-29 19:48:32</sys_updated_on>
+    </sys_script_include>
+</record_update>
