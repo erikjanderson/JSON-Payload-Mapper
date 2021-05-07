@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[function ($scope) {
+        <client_script><![CDATA[function ($scope, $timeout) {
     var c = this;
     c.analyzePayload = analyzePayload;
     c.saveMap = saveMap;
@@ -10,7 +10,9 @@
     c.selectExistingMap = selectExistingMap;
     c.loadSavedMap = loadSavedMap;
 		c.previewMapChanges = previewMapChanges;
-
+		c.maplessScriptUsagage = false;	
+		c.toggleMapplessScriptUsage = toggleMapplessScriptUsage;
+	
     c.showHideChildElements = showHideChildElements;
 		c.toggleCollapse = toggleCollapse;
     c.previewPaneType = 'ModelEditor';
@@ -43,23 +45,31 @@ function	init(){
     }
 
     function loadSavedMap(index) {
-        if (c.savedMaps && c.savedMaps[index] && c.savedMaps[index].name) {
-					if(c.savedMaps[index].value){
-						var mapArray = JSON.parse(c.savedMaps[index].value);
-            for (var i = 0; i < mapArray.length; i++) {
-                mapArray[i].hidden = false;
-            }
-            c.keyArray = mapArray;
-						setObjectLevels(c.keyArray);
-						c.selectedMapName = c.savedMaps[index].name;
-            $('#priamryModal').modal('hide');
-					}else {
-            c.selectedMapName = c.savedMaps[index].name;
-						c.loadModalType = 'payload';
-						
-         }
-            
-        } 
+			c.keyArray = [];
+			c.previewedScript = "";
+			c.successfulSave = false;
+			if(index === -1){
+				c.selectedMapName = "Mapless";
+				c.noMapSelected = true;
+				c.loadModalType = 'payload';
+			}
+			if (c.savedMaps && c.savedMaps[index] && c.savedMaps[index].name) {
+				c.noMapSelected = false;
+				if(c.savedMaps[index].value){
+					var mapArray = JSON.parse(c.savedMaps[index].value);
+					for (var i = 0; i < mapArray.length; i++) {
+						mapArray[i].hidden = false;
+					}
+					c.keyArray = mapArray;
+					setObjectLevels(c.keyArray);
+					c.selectedMapName = c.savedMaps[index].name;
+					$('#priamryModal').modal('hide');
+				}else {
+					c.selectedMapName = c.savedMaps[index].name;
+					c.loadModalType = 'payload';
+
+				}
+			} 
     }
 	
 		function previewMapChanges(){
@@ -79,8 +89,34 @@ function	init(){
 					}
 				});
 			}
+			if(c.maplessScriptUsagage){
+				previewScript();
+			}
 		}
+	
+	function previewScript(){
+		if(c.keyArray && c.keyArray.length){
+				var input = {
+					action: "scriptPreview",
+					keyArray: c.keyArray
+				}
+				c.server.get(input).then(function (response){
+					if(response && response.data){
+						c.previewedScript = response.data.scriptPreview;
+						
+					}
+				});
+		}
+	}
 
+		function toggleMapplessScriptUsage(){
+			if(c.maplessScriptUsagage){
+				c.maplessScriptUsagage = false
+			}else{
+				c.maplessScriptUsagage = true;
+				previewMapChanges();
+			}
+		}
 
     function showHideChildElements(element) {
         element.showDetails = !element.showDetails;
@@ -215,6 +251,9 @@ function	init(){
 							if(response.data.saveSuccessFull){
 								c.savingMap = false;
 								c.successfulSave = true;
+								$timeout((function(){
+									c.successfulSave = false;
+								}), 3000);
 							}else{
 								c.savingMap = false;
 								c.successfulSave = false;
@@ -481,7 +520,7 @@ textarea {
 
 .btn.ireButton{
     color: white;
-    width: 108px;
+    width: 170px;
     height: 39px;
     margin: 3px 9px 8px 8px;
     background-color: #247ba0;
@@ -660,6 +699,11 @@ textarea {
 					var processor = new PayloadProcessor();
 					data.previewedOutput = processor.flattenPayload(input.keyArray, input.payloadParsed);
 				}
+			
+				if (input.action === "scriptPreview" && input.keyArray) {
+					var scriptBuilder = new MaplessScriptBuilder(input.keyArray);
+					data.scriptPreview = scriptBuilder.generateScript();
+				}
     }
 
 
@@ -670,14 +714,14 @@ textarea {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-05-14 13:51:19</sys_created_on>
         <sys_id>f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_id>
-        <sys_mod_count>1244</sys_mod_count>
+        <sys_mod_count>1263</sys_mod_count>
         <sys_name>Mapping Helper</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy/>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sp_widget_f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-03-30 14:47:40</sys_updated_on>
+        <sys_updated_on>2021-05-07 13:04:14</sys_updated_on>
         <template><![CDATA[<div>
  <!-- <pre>{{c.keyArray}}</pre> -->
   <div style="height: 98vh">
@@ -695,6 +739,7 @@ textarea {
                 </div>
                 <div class="filterButtonGroup">
                     <button type="button" class="btn ireButton" data-toggle="modal"
+                        ng-disabled="c.noMapSelected"
                         ng-click="c.saveMap(c.selectedMapName)">
                         <span ng-if="!c.savingMap">Save Map <i ng-if="c.successfulSave"
                                 class="fa fa-check-circle-o"></i></span>
@@ -710,14 +755,20 @@ textarea {
                 <div id="advanced_options" class="panel-collapse collapse">
                     <div class="panel-body">
                       
-                        <button type="button" class="btn ireButton" data-toggle="modal"
-                              ng-click="c.loadModalType = 'payload'" data-target="#priamryModal">
-                              Preview
+                        <button type="button" class="btn ireButton"
+                              ng-click="c.toggleMapplessScriptUsage()">
+                             <i ng-class="{'fa fa-square-o' : !c.maplessScriptUsagage, 'fa fa-check-square-o': c.maplessScriptUsagage}">
+                          </i> Mapless Script Usage
                           </button>
                       
                         <button type="button" class="btn ireButton" data-toggle="modal"
                             ng-click="c.loadModalType = 'payload'" data-target="#priamryModal">
                             Set Payload
+                        </button>
+                      
+                      	<button type="button" class="btn ireButton" data-toggle="modal"
+                            ng-click="c.selectExistingMap()" data-target="#priamryModal">
+                            Select New Map
                         </button>
                     </div>
                 </div>
@@ -849,9 +900,9 @@ textarea {
       </div>
       
       <div class="previewBody"  ng-show="c.previewPaneType === 'ScriptUsage'">
-        <pre class="customScroll">
+        <pre class="customScroll" ng-if="!c.maplessScriptUsagage">
         	
-//Call the payload flattener class and pass in the propertyName to initialize the map to be used for processing
+Call the payload flattener class and pass in the propertyName to initialize the map to be used for processing
 var flattener = new PayloadFlattener("{{c.selectedMapName}}");
 
 //Set the type of the base level object
@@ -863,6 +914,9 @@ var result = flattener.process(object);
 //If you have an array of data to process call the process array function instead
 //var result = flattener.processArray(object);
           
+        </pre>
+        <pre class="customScroll" ng-if="c.maplessScriptUsagage">
+        	{{c.previewedScript}}
         </pre>
       </div>
       
@@ -901,8 +955,8 @@ var result = flattener.process(object);
             <div class="modal-body text-center">
                 <p><strong>Select one of the system properties that stores mapping data that you want to edit</strong>
                 </p>
-                <label ng-repeat="map in c.savedMaps" class="mapList"
-                    ng-click="c.loadSavedMap($index)">{{map.suffix}}</label>
+              <label class="mapList" ng-click="c.loadSavedMap(-1)">Mapless</label>
+              <label ng-repeat="map in c.savedMaps" class="mapList" ng-click="c.loadSavedMap($index)">{{map.suffix}}</label>
             </div>
         </div>
 
