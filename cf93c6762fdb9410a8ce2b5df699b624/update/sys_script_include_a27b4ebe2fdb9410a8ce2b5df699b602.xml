@@ -56,6 +56,11 @@ PayloadScanner.prototype = {
 				arrayObj = this.scanArray(obj[key], level + 1, newStack, arrayObj);
 			}else{
 				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type.val, this.includeSampleValue);
+				if(type.val === 'array' && !type.isComplexArray && obj[key].length > 0){
+					var valStack = newStack+".value";
+					var valType =  this.getType(obj[key][0]);
+					arrayObj[valStack] = new this.PayloadElement(valStack, "value", obj[key][0], level + 1, valType.val, this.includeSampleValue, true);
+				}
 			}
 		}
 		return arrayObj;
@@ -93,7 +98,7 @@ PayloadScanner.prototype = {
 		return type;
     },
 	
-	PayloadElement: function(stack, key, value, level, type, includeSampleVal){
+	PayloadElement: function(stack, key, value, level, type, includeSampleVal, isArraySimpleValue){
 		this.stack = stack;
 		var column = stack.replace(/\./g, '_').toLowerCase();
 		column = column.replace(/ /g, "");
@@ -132,6 +137,9 @@ PayloadScanner.prototype = {
 		this.active = false;
 		this.level = level;
 		this.type = type;
+		if(isArraySimpleValue){
+			this.simpleArrayVal = true;
+		}
 	},
 
     type: 'PayloadScanner'
@@ -140,13 +148,13 @@ PayloadScanner.prototype = {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-09-20 19:46:34</sys_created_on>
         <sys_id>a27b4ebe2fdb9410a8ce2b5df699b602</sys_id>
-        <sys_mod_count>17</sys_mod_count>
+        <sys_mod_count>24</sys_mod_count>
         <sys_name>PayloadScanner</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sys_script_include_a27b4ebe2fdb9410a8ce2b5df699b602</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-03-25 16:58:52</sys_updated_on>
+        <sys_updated_on>2021-05-12 18:05:21</sys_updated_on>
     </sys_script_include>
 </record_update>

@@ -29,7 +29,7 @@ PayloadProcessor.prototype = {
 				var column = key.targetColumn;
 				
 				
-				var returnItem = this.extractValue(key.stack, key.type, payload, null, headID);
+				var returnItem = this.extractValue(key.stack, key.type, payload, null, headID, key.simpleArrayVal);
 				if(Array.isArray(returnItem)){
 					flatObj = this.flattenArray(returnItem, column, flatObj, key.primary);
 				}else{
@@ -129,7 +129,7 @@ PayloadProcessor.prototype = {
 		return flatObj;
 	},
 	
-	extractValue: function(stack, type, payload, stackTrack, parentTrack){
+	extractValue: function(stack, type, payload, stackTrack, parentTrack, simpleArrayVal){
 		if(!Array.isArray(parentTrack)){
 			var holdVal = parentTrack;
 			parentTrack = [holdVal];
@@ -138,29 +138,32 @@ PayloadProcessor.prototype = {
 		if (!Array.isArray(stack)) {
             stack = stack.split('.');
         }
-		for (var s = 0; s < stack.length; s++) {
-			if(val[stack[s]]){
-				val = val[stack[s]];
-				if(!stackTrack){
-					stackTrack = stack[s];
+		if(!simpleArrayVal || stack[0] != "value"){
+			for (var s = 0; s < stack.length; s++) {
+				if(val[stack[s]]){
+					val = val[stack[s]];
+					if(!stackTrack){
+						stackTrack = stack[s];
+					}else{
+						stackTrack = stackTrack + '_' + stack[s];
+					}
+
+					if(this.getType(val).val == 'array'){
+						if(stack[s+1]){
+							var reStack = [];
+							for (var t = s+1; t < stack.length; t++) {
+								reStack.push(stack[t]);
+							}
+							return this.extractArrayValue(reStack, type, val, stackTrack, parentTrack, simpleArrayVal);
+						}
+					}
 				}else{
-					stackTrack = stackTrack + '_' + stack[s];
+					return null;
 				}
 
-				if(this.getType(val).val == 'array'){
-					if(stack[s+1]){
-						var reStack = [];
-						for (var t = s+1; t < stack.length; t++) {
-							reStack.push(stack[t]);
-						}
-						return this.extractArrayValue(reStack, type, val, stackTrack, parentTrack);
-					}
-				}
-			}else{
-				return null;
 			}
-			
 		}
+		
 		if(type === 'object' || type === 'array'){
 			return JSON.stringify(val);
 		}else{
@@ -168,7 +171,7 @@ PayloadProcessor.prototype = {
 		}
 	},
 	
-	extractArrayValue: function(stack, type, array, stackTrack, parentTrack, returnFull){
+	extractArrayValue: function(stack, type, array, stackTrack, parentTrack, simpleArrayVal){
 		if(!this.arrayTrack[stackTrack.toLowerCase()]){
 			this.arrayTrack[stackTrack.toLowerCase()] = {};
 		}
@@ -188,7 +191,8 @@ PayloadProcessor.prototype = {
 			var copyParent = this.copyArray(parentTrack);
 			copyParent.push(this.arrayTrack[stackTrack.toLowerCase()][i]);
 			
-			trackObj.val = this.extractValue(stack, type, array[i], stackTrack, copyParent);
+			trackObj.val = this.extractValue(stack, type, array[i], stackTrack, copyParent, simpleArrayVal);
+			
 			arrayTrack.push(trackObj);
 		}
 		return arrayTrack;
@@ -224,13 +228,13 @@ PayloadProcessor.prototype = {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-09-20 19:47:17</sys_created_on>
         <sys_id>94ab0abe2fdb9410a8ce2b5df699b625</sys_id>
-        <sys_mod_count>18</sys_mod_count>
+        <sys_mod_count>21</sys_mod_count>
         <sys_name>PayloadProcessor</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sys_script_include_94ab0abe2fdb9410a8ce2b5df699b625</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-03-25 16:50:42</sys_updated_on>
+        <sys_updated_on>2021-05-12 18:25:18</sys_updated_on>
     </sys_script_include>
 </record_update>
