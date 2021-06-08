@@ -5,7 +5,7 @@
         <api_name>x_156954_payload_m.MaplessScriptBuilder</api_name>
         <caller_access/>
         <client_callable>false</client_callable>
-        <description>Build a script that will be designed to parse object info based on map selections this will prevent the need to carry around a map with ambiguous logic that customers may have trouble understanding.</description>
+        <description>Build a script that will be designed to parse object info based on map selections this will prevent the need to carry around a map tool with ambiguous logic that customers may have trouble understanding.</description>
         <name>MaplessScriptBuilder</name>
         <script><![CDATA[var MaplessScriptBuilder = Class.create();
 MaplessScriptBuilder.prototype = {
@@ -43,7 +43,7 @@ MaplessScriptBuilder.prototype = {
 				}
 				str +=  this.functionList[reversedKeyNames[i]];
 			}
-			
+			str += "\n\n" + this._addObjectFunction();
 			str += "\n\n" + this.buildInitColumnFunction();
         }
         return str;
@@ -74,12 +74,12 @@ MaplessScriptBuilder.prototype = {
     addField: function(field, stackArray, obj, index, returnInherits) {
         var pos = stackArray[index];
         var normPos = this._normalizePosition(pos, (!stackArray[index + 1]));
+		
         if (!stackArray[index + 1] && field.type != "array" && field.type !== "object") {
+			obj.fields[normPos] = field;
 			if(field.primary){
 				obj.inherits[normPos] = field;
 			}
-			obj.fields[normPos] = field;
-			
         } else {
             if (normPos.indexOf("[]") === -1) {
                 normPos += ".{}";
@@ -93,6 +93,9 @@ MaplessScriptBuilder.prototype = {
             }
 			if(!stackArray[index + 1] && (field.type === "array" || field.type === "object")){
 				obj.fields[normPos].fields[pos] = field;
+				if(field.primary){
+					obj.inherits[normPos] = field;
+				}
 			}else if(normPos.indexOf("{}") > -1){
 				var inherits = this.addField(field, stackArray, obj.fields[normPos], index + 1, true);
 				for(var inheritKey in inherits){
@@ -122,7 +125,12 @@ MaplessScriptBuilder.prototype = {
 		}; 
 		for(var inheritKey in fieldList.inherits){
 			var inheritVarName = this._camelCaseName(fieldList.inherits[inheritKey].stack);
-			obj.initVarStr+=this._newLine(tabLevel) + "var " + inheritVarName + ";";
+			if(fieldList.inherits[inheritKey].type === "array" || fieldList.inherits[inheritKey].type === "object"){
+				obj.initVarStr+=this._newLine(tabLevel) + "var " + inheritVarName + "JSON;";
+			}else{
+				obj.initVarStr+=this._newLine(tabLevel) + "var " + inheritVarName + ";";
+			}
+			
 			inherits.push(fieldList.inherits[inheritKey]);
 		}
         for (var key in fieldList.fields) {
@@ -138,8 +146,8 @@ MaplessScriptBuilder.prototype = {
             finalString += this._newLine(tabLevel) + "var obj = {};";
 			finalString += obj.initVarStr;
             finalString += obj.str;
+			finalString += this._newLine(tabLevel) + "this.addObject(obj);";
 			finalString += obj.functionCallStr;
-			finalString += this._newLine(tabLevel) + "this.flattened"+ this._capitalize(this.rootObjectName)  +".push(obj);";
 			finalString += this._newLine(tabLevel) + "return this.flattened"+ this._capitalize(this.rootObjectName) + ";";
             finalString += this._newLine(tabLevel - 1) + "},";
             this.functionList[objectName] = finalString;
@@ -149,28 +157,40 @@ MaplessScriptBuilder.prototype = {
 	addValAssignments: function(obj, key, field, tabLevel, objectName, inherits, fieldInherits){
 		var keyArray = key.split(".");
 		var keyVal = keyArray[0];
-		
-		
-		if (keyArray[1] && keyArray[1] === "{}") {
-			obj.str += this._newLine(tabLevel) + "var " + keyVal + " = " + objectName + "." + keyVal + ";";
-			obj.str += this._newLine(tabLevel) + "if (" + keyVal + ") {";
-			var newObj = this.buildFunction(field, tabLevel + 1, keyVal, true, inherits);
+		var internalKeyVal = keyVal.replace(/ /g, "");
+		var ogInherits = this._copyArray(inherits);
+		if (keyArray[1] && keyArray[1] === "{}") {//this._cleanTarget("obj", field.targetColumn)
+			obj.str += this._newLine(tabLevel) + "var " + internalKeyVal + " = " + this._cleanTarget(objectName, keyVal) + ";";
+			obj.str += this._newLine(tabLevel) + "if (" + internalKeyVal + ") {";
+			var newObj = this.buildFunction(field, tabLevel + 1, internalKeyVal, true, inherits);
 			obj.str += newObj.str;
 			obj.functionCallStr += newObj.functionCallStr;
+			obj.initVarStr += newObj.initVarStr;
 			obj.str += this._newLine(tabLevel) + "}";
 		} else if (keyArray[1] && keyArray[1] === "[]") {
-			obj.functionCallStr += this._newLine(tabLevel) + "this.get" + this._capitalize(keyVal) + "Array(" + objectName + "." + keyVal + this.getPassThroughVariables(inherits) +");";
-			this.buildArrayFunction(field, keyVal, inherits, fieldInherits);
+			obj.str += this._newLine(tabLevel) + internalKeyVal + " = " + this._cleanTarget(objectName, keyVal)+ ";";
+			obj.initVarStr += this._newLine(tabLevel) + "var " + internalKeyVal + ";";
+			obj.functionCallStr += this._newLine(1) + "this.get" + this._capitalize(internalKeyVal) + "Array(" + internalKeyVal + this.getPassThroughVariables(ogInherits) +");";
+			this.buildArrayFunction(field, internalKeyVal, ogInherits, fieldInherits);
 		} else {
 			if(field.primary){
-				obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + " = " + objectName + "." + field.key + ";";
+				if(field.type === "object" || field.type === "array"){
+					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + "JSON = " + "JSON.stringify(" + field.key + ");";
+				}else{
+					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + " = " + objectName + "." + field.key + ";";
+				}
 			}
 			if(field.type === "object" || field.type === "array"){
-				obj.str += this._newLine(tabLevel) + "obj." + field.targetColumn + " = JSON.stringify(" + field.key + ");";
+				if(field.primary){
+					obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + this._camelCaseName(field.stack) + "JSON" + ";";
+				}else{
+					obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = JSON.stringify(" + field.key + ");";
+				}
+				
 			}else if(field.simpleArrayVal){
-				obj.str += this._newLine(tabLevel) + "obj." + field.targetColumn + " = " + objectName + ";";
+				obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + objectName + ";";
 			}else{
-				obj.str += this._newLine(tabLevel) + "obj." + field.targetColumn + " = " + objectName + "." + field.key + ";";
+				obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + objectName + "." + field.key + ";";
 			}
 			
 		}
@@ -180,7 +200,12 @@ MaplessScriptBuilder.prototype = {
 	getPassThroughVariables: function(inherits){
 		var str = "";
 			for(var i = 0; i < inherits.length; i++){
-				str += ", " + this._camelCaseName(inherits[i].stack);
+				if(inherits[i].type === "array" || inherits[i].type === "object"){
+					str += ", " + this._camelCaseName(inherits[i].stack) + "JSON";
+				}else{
+					str += ", " + this._camelCaseName(inherits[i].stack);
+				}
+				
 			}
 		return str;
 	},
@@ -189,7 +214,12 @@ MaplessScriptBuilder.prototype = {
 		var str = "";
 		if(inherits && inherits.length){
 			for(var i = 0; i < inherits.length; i++){
-				str += this._newLine(3) + "obj." + inherits[i].targetColumn + " = " + this._camelCaseName(inherits[i].stack) + ";";
+				if(inherits[i].type === "array" || inherits[i].type === "object"){
+					str += this._newLine(3) + this._cleanTarget("obj",  inherits[i].targetColumn) + " = " + this._camelCaseName(inherits[i].stack) + "JSON;";
+				}else{
+					str += this._newLine(3) + this._cleanTarget("obj",  inherits[i].targetColumn) + " = " + this._camelCaseName(inherits[i].stack) + ";";
+				}
+				
 			}
 		}
 		return str;
@@ -206,10 +236,9 @@ MaplessScriptBuilder.prototype = {
 		var newObj = this.buildFunction(fieldList, 3, objectName, true, inherits);
 		str += newObj.initVarStr;
 		str+= inheritsAssingments;
-
 		str += newObj.str;
+		str += this._newLine(3) + "this.addObject(obj);";
 		str += newObj.functionCallStr;
-        str += this._newLine(3) + "this.flattened" + this._capitalize(this.rootObjectName) + ".push(obj);";
         str += this._newLine(2) + "}";
         str += this._newLine(1) + "}";
         str += this._newLine(0) + "},";
@@ -294,19 +323,45 @@ MaplessScriptBuilder.prototype = {
 		return returnObj;
 	},
 
+    _cleanTarget: function(objName, targetColumn){
+        if(targetColumn.indexOf(" ") > -1){
+            return objName + "[\"" + targetColumn + "\"]";
+        }else{
+            return objName + "." + targetColumn;
+        }
+    },
+	
+	_addObjectFunction : function(){
+		return "addObject: function (obj) {\n    var keys = Object.keys(obj);\n    for (var i = 0; i < keys.length; i++) {\n        var key = keys[i];\n        if (obj[key] == undefined) {\n            delete obj[key];\n        }\n    }\n    this.flattened"+ this._capitalize(this.rootObjectName) + ".push(obj);\n},";
+	}, 
+	
+	_copyArray: function(array){
+		var returnArray = [];
+		if(array && array.length){
+			for(var i = 0; i < array.length; i++){
+				returnArray.push(array[i]);
+			}
+		}
+		return returnArray;
+	},
+	
+	_newInitVariable: function(field){
+		
+	},
+
     type: 'MaplessScriptBuilder'
 };]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2021-04-29 23:53:26</sys_created_on>
         <sys_id>81ca490a2f372010a8ce2b5df699b688</sys_id>
-        <sys_mod_count>205</sys_mod_count>
+        <sys_mod_count>237</sys_mod_count>
         <sys_name>MaplessScriptBuilder</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sys_script_include_81ca490a2f372010a8ce2b5df699b688</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-05-12 18:30:37</sys_updated_on>
+        <sys_updated_on>2021-05-21 17:51:47</sys_updated_on>
     </sys_script_include>
 </record_update>

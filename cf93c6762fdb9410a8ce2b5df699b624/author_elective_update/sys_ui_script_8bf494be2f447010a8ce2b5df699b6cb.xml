@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_script">
+    <sys_ui_script action="DELETE">
+        <active>true</active>
+        <description/>
+        <global>false</global>
+        <name>x_156954_payload_m.CodeMirror</name>
+        <script><![CDATA[(function() {
+
+    //object to store macros in
+
+    var macrosObj = {
+
+    };
+
+    //add keyup event listener
+
+    jQuery(window).on('keyup', function(e) {
+
+        var keyCode = e.keyCode || e.which;
+
+        //check if key pressed is TAB
+
+        if (keyCode == 9) {
+
+            //get DOM element for active pane
+
+            var cmEl = jQuery(document.activeElement).parents('.CodeMirror')[0];
+
+            //get CodeMirror object for active pane. CodeMirror is the Syntax Editor library used in the Widget Editor
+
+            var cmObj = cmEl.CodeMirror;
+
+            //get position of cursor and end of line
+
+            var tmpCursor = cmObj.getCursor();
+
+            var eol = cmObj.getLine(tmpCursor.line).length;
+
+            //do nothing if cursor is not at end of line
+
+            //this allows users to continue using TAB key for formatting/indentation
+
+            if (tmpCursor.ch < eol) {
+
+                return true;
+
+            }
+
+            //do nothing if any text is selected
+
+            if (cmObj.somethingSelected()) {
+
+                return true;
+
+            }
+
+            //find the start and end position of the word preceeding the cursor
+
+            var wordObj = cmObj.findWordAt({
+
+                line: tmpCursor.line,
+
+                ch: tmpCursor.ch - 2
+
+            });
+
+            //get the actual word preceeding the cursor
+
+            var word = cmObj.getRange(wordObj.anchor, wordObj.head);
+
+            //do nothing if a corresponding Syntax Editor Macro does not exist
+
+            if (typeof macrosObj[word] === 'undefined')
+
+                return true;
+
+            //select the word preceeding the cursor
+
+            var sel = cmObj.setSelection(wordObj.anchor, wordObj.head);
+
+            //replace selection with the text of the Syntax Editor Macro
+
+            cmObj.replaceSelection(macrosObj[word].text);
+
+        }
+
+    });
+
+    //populate macrosObj with records from the Syntax Editor Macro table
+
+    var requestBody = "";
+
+    var client = new XMLHttpRequest();
+
+    client.open("get", "/api/now/table/syntax_editor_macro?sysparm_fields=name%2Ctext");
+
+    client.setRequestHeader('Accept', 'application/json');
+
+    client.setRequestHeader('Content-Type', 'application/json');
+
+    client.setRequestHeader('X-UserToken', window.g_ck);
+
+    client.onreadystatechange = function() {
+
+        if (this.readyState == this.DONE) {
+
+            var rspObj = JSON.parse(this.response).result;
+
+            for (var macro in rspObj) {
+
+                if (!rspObj.hasOwnProperty(macro))
+
+                    continue;
+
+                var currentMacro = rspObj[macro];
+
+                macrosObj[currentMacro.name] = currentMacro;
+
+            }
+
+        }
+
+    };
+
+    client.send(requestBody);
+
+})();]]></script>
+        <script_name>CodeMirror</script_name>
+        <sys_class_name>sys_ui_script</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:07:58</sys_created_on>
+        <sys_id>8bf494be2f447010a8ce2b5df699b6cb</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_156954_payload_m.CodeMirror</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_ui_script_8bf494be2f447010a8ce2b5df699b6cb</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:07:58</sys_updated_on>
+        <ui_type>0</ui_type>
+        <use_scoped_format>false</use_scoped_format>
+    </sys_ui_script>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sys_ui_script_8bf494be2f447010a8ce2b5df699b6cb</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_ui_script"&gt;&lt;sys_ui_script action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;description/&gt;&lt;global&gt;false&lt;/global&gt;&lt;name&gt;x_156954_payload_m.CodeMirror&lt;/name&gt;&lt;script&gt;&lt;![CDATA[(function() {
+
+    //object to store macros in
+
+    var macrosObj = {
+
+    };
+
+    //add keyup event listener
+
+    jQuery(window).on('keyup', function(e) {
+
+        var keyCode = e.keyCode || e.which;
+
+        //check if key pressed is TAB
+
+        if (keyCode == 9) {
+
+            //get DOM element for active pane
+
+            var cmEl = jQuery(document.activeElement).parents('.CodeMirror')[0];
+
+            //get CodeMirror object for active pane. CodeMirror is the Syntax Editor library used in the Widget Editor
+
+            var cmObj = cmEl.CodeMirror;
+
+            //get position of cursor and end of line
+
+            var tmpCursor = cmObj.getCursor();
+
+            var eol = cmObj.getLine(tmpCursor.line).length;
+
+            //do nothing if cursor is not at end of line
+
+            //this allows users to continue using TAB key for formatting/indentation
+
+            if (tmpCursor.ch &lt; eol) {
+
+                return true;
+
+            }
+
+            //do nothing if any text is selected
+
+            if (cmObj.somethingSelected()) {
+
+                return true;
+
+            }
+
+            //find the start and end position of the word preceeding the cursor
+
+            var wordObj = cmObj.findWordAt({
+
+                line: tmpCursor.line,
+
+                ch: tmpCursor.ch - 2
+
+            });
+
+            //get the actual word preceeding the cursor
+
+            var word = cmObj.getRange(wordObj.anchor, wordObj.head);
+
+            //do nothing if a corresponding Syntax Editor Macro does not exist
+
+            if (typeof macrosObj[word] === 'undefined')
+
+                return true;
+
+            //select the word preceeding the cursor
+
+            var sel = cmObj.setSelection(wordObj.anchor, wordObj.head);
+
+            //replace selection with the text of the Syntax Editor Macro
+
+            cmObj.replaceSelection(macrosObj[word].text);
+
+        }
+
+    });
+
+    //populate macrosObj with records from the Syntax Editor Macro table
+
+    var requestBody = "";
+
+    var client = new XMLHttpRequest();
+
+    client.open("get", "/api/now/table/syntax_editor_macro?sysparm_fields=name%2Ctext");
+
+    client.setRequestHeader('Accept', 'application/json');
+
+    client.setRequestHeader('Content-Type', 'application/json');
+
+    client.setRequestHeader('X-UserToken', window.g_ck);
+
+    client.onreadystatechange = function() {
+
+        if (this.readyState == this.DONE) {
+
+            var rspObj = JSON.parse(this.response).result;
+
+            for (var macro in rspObj) {
+
+                if (!rspObj.hasOwnProperty(macro))
+
+                    continue;
+
+                var currentMacro = rspObj[macro];
+
+                macrosObj[currentMacro.name] = currentMacro;
+
+            }
+
+        }
+
+    };
+
+    client.send(requestBody);
+
+})();]]&gt;&lt;/script&gt;&lt;script_name&gt;CodeMirror&lt;/script_name&gt;&lt;sys_class_name&gt;sys_ui_script&lt;/sys_class_name&gt;&lt;sys_created_by&gt;erik.anderson&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2021-05-14 14:07:58&lt;/sys_created_on&gt;&lt;sys_id&gt;8bf494be2f447010a8ce2b5df699b6cb&lt;/sys_id&gt;&lt;sys_mod_count&gt;0&lt;/sys_mod_count&gt;&lt;sys_name&gt;x_156954_payload_m.CodeMirror&lt;/sys_name&gt;&lt;sys_package display_value="Payload Mapper" source="x_156954_payload_m"&gt;cf93c6762fdb9410a8ce2b5df699b624&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="Payload Mapper"&gt;cf93c6762fdb9410a8ce2b5df699b624&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_ui_script_8bf494be2f447010a8ce2b5df699b6cb&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;erik.anderson&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2021-05-14 14:07:58&lt;/sys_updated_on&gt;&lt;ui_type&gt;0&lt;/ui_type&gt;&lt;use_scoped_format&gt;false&lt;/use_scoped_format&gt;&lt;/sys_ui_script&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>-1173875961</payload_hash>
+        <record_name>x_156954_payload_m.CodeMirror</record_name>
+        <reverted_from/>
+        <source>15aa67072f371010a8ce2b5df699b6df</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:07:58</sys_created_on>
+        <sys_id>3e35d0be2f447010a8ce2b5df699b6b7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1796b3494510000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:07:58</sys_updated_on>
+        <type>UI Script</type>
+        <update_guid>3635d0be65447010f7915d440e5b7db7</update_guid>
+        <update_guid_history>3635d0be65447010f7915d440e5b7db7:-1173875961</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:22:32</sys_created_on>
+        <sys_db_object display_value="" name="sys_ui_script">sys_ui_script</sys_db_object>
+        <sys_id>2faa8a3594fb4ec4987968c1160833a1</sys_id>
+        <sys_metadata>8bf494be2f447010a8ce2b5df699b6cb</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_156954_payload_m.CodeMirror</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sys_ui_script_8bf494be2f447010a8ce2b5df699b6cb</sys_update_name>
+        <sys_update_version display_value="sys_ui_script_8bf494be2f447010a8ce2b5df699b6cb">3e35d0be2f447010a8ce2b5df699b6b7</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:22:32</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

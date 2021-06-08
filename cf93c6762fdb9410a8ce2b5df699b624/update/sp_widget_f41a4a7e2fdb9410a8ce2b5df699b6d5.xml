@@ -9,26 +9,27 @@
     c.setPrimaryToggle = setPrimaryToggle;
     c.selectExistingMap = selectExistingMap;
     c.loadSavedMap = loadSavedMap;
-		c.previewMapChanges = previewMapChanges;
-		c.maplessScriptUsagage = false;	
-		c.toggleMaplessScriptUsage = toggleMaplessScriptUsage;
-		c.toggleSelect = toggleSelect;
+    c.previewMapChanges = previewMapChanges;
+    c.maplessScriptUsage = false;
+    c.toggleMaplessScriptUsage = toggleMaplessScriptUsage;
+    c.toggleSelect = toggleSelect;
     c.showHideChildElements = showHideChildElements;
-		c.toggleCollapse = toggleCollapse;
+    c.toggleCollapse = toggleCollapse;
     c.previewPaneType = 'ModelEditor';
-		//c.organizeKeyArray = organizeKeyArray;
-	
-	init();
-function	init(){
-		selectExistingMap()
-	}
+    //c.organizeKeyArray = organizeKeyArray;
 
-	
-	function toggleCollapse(id){
-		$('#' + id).collapse('toggle');
-	}
+    init();
 
-    
+    function init() {
+        selectExistingMap()
+    }
+
+
+    function toggleCollapse(id) {
+        $('#' + id).collapse('toggle');
+    }
+
+
 
     function selectExistingMap() {
         var input = {
@@ -38,97 +39,97 @@ function	init(){
             if (response && response.data) {
                 c.savedMaps = response.data.savedMap;
                 c.loadModalType = 'map';
-                $('#priamryModal').modal('show');
+                $('#primaryModal').modal('show');
             }
         });
 
     }
 
     function loadSavedMap(index) {
-			c.keyArray = [];
-			c.previewedScript = "";
-			c.successfulSave = false;
-			if(index === -1){
-				c.selectedMapName = "Mapless";
-				c.noMapSelected = true;
-				c.loadModalType = 'payload';
-			}
-			if (c.savedMaps && c.savedMaps[index] && c.savedMaps[index].name) {
-				c.noMapSelected = false;
-				if(c.savedMaps[index].value){
-					var mapArray = JSON.parse(c.savedMaps[index].value);
-					for (var i = 0; i < mapArray.length; i++) {
-						mapArray[i].hidden = false;
-					}
-					c.keyArray = mapArray;
-					setObjectLevels(c.keyArray);
-					c.selectedMapName = c.savedMaps[index].name;
-					$('#priamryModal').modal('hide');
-				}else {
-					c.selectedMapName = c.savedMaps[index].name;
-					c.loadModalType = 'payload';
+        c.keyArray = [];
+        c.previewedScript = "";
+        c.successfulSave = false;
+        if (index === -1) {
+            c.selectedMapName = "Mapless";
+            c.noMapSelected = true;
+            c.loadModalType = 'payload';
+        }
+        if (c.savedMaps && c.savedMaps[index] && c.savedMaps[index].name) {
+            c.noMapSelected = false;
+            if (c.savedMaps[index].value) {
+                var mapArray = JSON.parse(c.savedMaps[index].value);
+                for (var i = 0; i < mapArray.length; i++) {
+                    mapArray[i].hidden = false;
+                }
+                c.keyArray = mapArray;
+                setObjectLevels(c.keyArray);
+                c.selectedMapName = c.savedMaps[index].name;
+                $('#primaryModal').modal('hide');
+            } else {
+                c.selectedMapName = c.savedMaps[index].name;
+                c.loadModalType = 'payload';
 
-				}
-			} 
+            }
+        }
     }
-	
-		function previewMapChanges(){
-			if(c.keyArray && c.keyArray.length && (c.payload || c.payloadParsed)){
-				if(!c.payloadParsed){
-					c.payloadParsed = JSON.parse(c.payload);
-				}
-				var input = {
-					action: "previewOutput",
-					keyArray: c.keyArray,
-					payloadParsed: c.payloadParsed
-				}
-				c.server.get(input).then(function (response){
-					if(response && response.data){
-						c.previewedOutput = response.data.previewedOutput;
-						$("#previewedOutput").html(JSON.stringify(c.previewedOutput, undefined, 2));
-					}
-				});
-			}
-			if(c.maplessScriptUsagage){
-				previewScript();
-			}
-		}
-	
-	function previewScript(){
-		if(c.keyArray && c.keyArray.length){
-				var input = {
-					action: "scriptPreview",
-					keyArray: c.keyArray
-				}
-				c.server.get(input).then(function (response){
-					if(response && response.data){
-						c.previewedScript = response.data.scriptPreview;
-						
-					}
-				});
-		}
-	}
 
-		function toggleMaplessScriptUsage(){
-			if(c.maplessScriptUsagage){
-				c.maplessScriptUsagage = false
-			}else{
-				c.maplessScriptUsagage = true;
-				previewMapChanges();
-			}
-		}
-	
-		function toggleSelect(active){
-			if(this.keyArray && this.keyArray.length){
-				for(var i = 0; i < this.keyArray.length; i++){
-					var key = this.keyArray[i];
-					if(key.type != "object" && key.type != "array" ){
-						key.active = true;
-					}
-				}
-				previewMapChanges()
-			}
-		}
+    function previewMapChanges() {
+        if (c.keyArray && c.keyArray.length && (c.payload || c.payloadParsed)) {
+            if (!c.payloadParsed) {
+                c.payloadParsed = JSON.parse(c.payload);
+            }
+            var input = {
+                action: "previewOutput",
+                keyArray: c.keyArray,
+                payloadParsed: c.payloadParsed
+            }
+            c.server.get(input).then(function (response) {
+                if (response && response.data) {
+                    c.previewedOutput = response.data.previewedOutput;
+                    $("#previewedOutput").html(JSON.stringify(c.previewedOutput, undefined, 2));
+                }
+            });
+        }
+        if (c.maplessScriptUsage) {
+            previewScript();
+        }
+    }
+
+    function previewScript() {
+        if (c.keyArray && c.keyArray.length) {
+            var input = {
+                action: "scriptPreview",
+                keyArray: c.keyArray
+            }
+            c.server.get(input).then(function (response) {
+                if (response && response.data) {
+                    c.previewedScript = response.data.scriptPreview;
+
+                }
+            });
+        }
+    }
+
+    function toggleMaplessScriptUsage() {
+        if (c.maplessScriptUsage) {
+            c.maplessScriptUsage = false
+        } else {
+            c.maplessScriptUsage = true;
+            previewMapChanges();
+        }
+    }
+
+    function toggleSelect(active) {
+        if (this.keyArray && this.keyArray.length) {
+            for (var i = 0; i < this.keyArray.length; i++) {
+                var key = this.keyArray[i];
+                if (key.type != "object" && key.type != "array") {
+                    key.active = true;
+                }
+            }
+            previewMapChanges()
+        }
+    }
 
     function showHideChildElements(element) {
         element.showDetails = !element.showDetails;
@@ -160,7 +161,7 @@ function	init(){
             }
         })
     }
-	
+
     function analyzePayload(payload) {
         var input = {
             action: 'analyzePayload',
@@ -176,10 +177,10 @@ function	init(){
                     } else {
                         c.keyArray = response.data.array;
                     }
-										setObjectLevels(c.keyArray);
-										previewMapChanges();
+                    setObjectLevels(c.keyArray);
+                    previewMapChanges();
 
-                    $('#priamryModal').modal('hide');
+                    $('#primaryModal').modal('hide');
                 }
             })
     }
@@ -192,51 +193,54 @@ function	init(){
                     mapArray[i].hidden = false;
                 }
                 c.keyArray = mapArray;
-                $('#priamryModal').modal('hide');
+                $('#primaryModal').modal('hide');
             } catch (e) {
                 alert(JSON.stringify(e));
             }
         }
     }
-	
-	function mergeKeyArrays(oldKeyArray, newKeyArray) {
+
+    function mergeKeyArrays(oldKeyArray, newKeyArray) {
         for (var i = 0; i < oldKeyArray.length; i++) {
             var matchIndex = findMatchIndex(oldKeyArray[i].stack, newKeyArray);
             if ((matchIndex != false || matchIndex === 0) && newKeyArray[matchIndex]) {
                 newKeyArray[matchIndex] = oldKeyArray[i];
-            }else{
-							newKeyArray.push(oldKeyArray[i]);
-						}
+            } else {
+                newKeyArray.push(oldKeyArray[i]);
+            }
         }
         return newKeyArray;
     }
-	
-	function setObjectLevels(array){
-			c.arrayLocations = [];
-			for(var i = 0; i < array.length; i++){
-					var element = array[i];
-					if(element.type === "array"){
-							c.arrayLocations.push({"key": element.key, "stack": element.stack})
-					}
-					setFunctionGroup(element, c.arrayLocations);
-			}
 
-			return array;
-	}
+    function setObjectLevels(array) {
+        c.arrayLocations = [];
+        for (var i = 0; i < array.length; i++) {
+            var element = array[i];
+            if (element.type === "array") {
+                c.arrayLocations.push({
+                    "key": element.key,
+                    "stack": element.stack
+                })
+            }
+            setFunctionGroup(element, c.arrayLocations);
+        }
 
-	function setFunctionGroup(element){
-		var set = false;
-			for(var i = 0; i < c.arrayLocations.length; i++){
-					var group = c.arrayLocations[i];
-					if(element.stack.indexOf(group.stack) === 0 && element.stack != group.stack){
-							element.group = group;
-						set =  true;
-					}
-			}
-		if(!set){
-			element.group = "root";
-		}
-	}
+        return array;
+    }
+
+    function setFunctionGroup(element) {
+        var set = false;
+        for (var i = 0; i < c.arrayLocations.length; i++) {
+            var group = c.arrayLocations[i];
+            if (element.stack.indexOf(group.stack) === 0 && element.stack != group.stack) {
+                element.group = group;
+                set = true;
+            }
+        }
+        if (!set) {
+            element.group = "root";
+        }
+    }
 
     function findMatchIndex(oldKeyStack, newKeyArray) {
         for (var i = 0; i < newKeyArray.length; i++) {
@@ -246,9 +250,9 @@ function	init(){
         }
         return false;
     }
-	
-	
-	
+
+
+
 
     function saveMap(mapName) {
         //$('#previewModal').modal("show");
@@ -260,17 +264,17 @@ function	init(){
         }
         c.server.get(input).then(function (response) {
             if (response && response.data) {
-							if(response.data.saveSuccessFull){
-								c.savingMap = false;
-								c.successfulSave = true;
-								$timeout((function(){
-									c.successfulSave = false;
-								}), 3000);
-							}else{
-								c.savingMap = false;
-								c.successfulSave = false;
-							}
-							
+                if (response.data.saveSuccessFull) {
+                    c.savingMap = false;
+                    c.successfulSave = true;
+                    $timeout((function () {
+                        c.successfulSave = false;
+                    }), 3000);
+                } else {
+                    c.savingMap = false;
+                    c.successfulSave = false;
+                }
+
             }
         });
     }
@@ -279,7 +283,7 @@ function	init(){
         for (var i = 0; i < c.keyArray.length; i++) {
             var element = c.keyArray[i];
             if (newValue && newValue != oldValue) {
-                if (element.stack.indexOf(newValue) >= 0) {
+                if (element.stack.toLowerCase().indexOf(newValue.toLowerCase()) >= 0) {
                     c.keyArray[i].hidden = false;
                     var split = element.stack.split('.');
                     if (split.length > 1) {
@@ -295,8 +299,8 @@ function	init(){
         }
 
     });
-	
-	
+
+
 
     function updateParentKeys(array, split, indexOfKey) {
         for (var i = 0; i < indexOfKey; i++) {
@@ -314,8 +318,8 @@ function	init(){
         }
         return array;
     }
-	
-	function copyToClipboard(text) {
+
+    function copyToClipboard(text) {
 
         // create temp element
         var copyElement = document.createElement("span");
@@ -334,155 +338,155 @@ function	init(){
         window.getSelection().removeAllRanges();
         copyElement.remove();
     }
-	
-		function organizeKeyArray(){
-			if(c.keyArray && c.keyArray.length){
-				var returnArray = [[]];
-				var arrayIndexKey = {};
-				for(var i = 0; i < c.keyArray.length; i++){
-						var keyObj = c.keyArray[i];
-						if(keyObj.active){
-								var targetIndex = getTargetIndex(keyObj.stack, arrayIndexKey);
-								returnArray[targetIndex].push(keyObj);
-						}
-						if(keyObj.parentRep && keyObj.type === "array"){
-								returnArray.push([]);
-								arrayIndexKey[keyObj.stack] = returnArray.length - 1;
-						}
-				}
-				return returnArray;
-			}
-	}
 
-	function getTargetIndex(stack, arrayIndexKey){
-			for(var arrayStack in arrayIndexKey){
-					if(stack.indexOf(arrayStack) === 0){
-							return arrayIndexKey[arrayStack];
-					}
-			}
-			return 0;
-	}
+    function organizeKeyArray() {
+        if (c.keyArray && c.keyArray.length) {
+            var returnArray = [
+                []
+            ];
+            var arrayIndexKey = {};
+            for (var i = 0; i < c.keyArray.length; i++) {
+                var keyObj = c.keyArray[i];
+                if (keyObj.active) {
+                    var targetIndex = getTargetIndex(keyObj.stack, arrayIndexKey);
+                    returnArray[targetIndex].push(keyObj);
+                }
+                if (keyObj.parentRep && keyObj.type === "array") {
+                    returnArray.push([]);
+                    arrayIndexKey[keyObj.stack] = returnArray.length - 1;
+                }
+            }
+            return returnArray;
+        }
+    }
+
+    function getTargetIndex(stack, arrayIndexKey) {
+        for (var arrayStack in arrayIndexKey) {
+            if (stack.indexOf(arrayStack) === 0) {
+                return arrayIndexKey[arrayStack];
+            }
+        }
+        return 0;
+    }
 
 }]]></client_script>
         <controller_as>c</controller_as>
-        <css>
+        <css>textarea {
+  border-radius: 4px;
+  resize: none;
 
-textarea {
-	  border-radius: 4px;
-    resize: none;
-  
 }
 
 .paneContainer {
-  	padding: 0px 5px;
-    font-size: 15px;
+  padding: 0px 5px;
+  font-size: 15px;
   height: 100%;
   display: grid;
   grid-row-gap: 5px;
 }
 
-.keyArrayControls{
-		border-radius: 8px;
-    background-color: #dadada;
-  	grid-row: 1;
-    grid-column: 1;
+.keyArrayControls {
+  border-radius: 8px;
+  background-color: #dadada;
+  grid-row: 1;
+  grid-column: 1;
 }
+
 .controls {
-	display: flex;
+  display: flex;
   background-color: #3f4256;
   border-radius: 8px 8px 0px 0px;
 }
 
 .contentPane {
-    border-style: solid;
-    border-radius: 8px;
-    background-color: #dadada;
-    border-color: #dadada;
-    height: 100%;
-    overflow: auto;
+  border-style: solid;
+  border-radius: 8px;
+  background-color: #dadada;
+  border-color: #dadada;
+  height: 100%;
+  overflow: auto;
 }
 
 .payloadSelectList {
-	grid-column: 1;
+  grid-column: 1;
   grid-row: 2 / 35;
 }
 
 .contentPane.previewPane {
-	border: none;
+  border: none;
   margin: 0px 0px 0px 0px;
   height: 100%
 }
 
 
 
-.customScroll::-webkit-scrollbar
-{
-    width: 10px;
-  	height: 10px;
+.customScroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-.customScroll::-webkit-scrollbar-thumb
-{
-    background-color: #959696;;
-  	border-radius: 5px;
+.customScroll::-webkit-scrollbar-thumb {
+  background-color: #959696;
+  ;
+  border-radius: 5px;
 }
 
 
 .elementBox {
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 3px;
-    border-color: #247ba0;
-    background-color: #247ba0;
-    color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  border-color: #247ba0;
+  background-color: #247ba0;
+  color: white;
   padding: 2px 0px 2px 10px;
-    margin: 7px 0px;
-      width: 50%;
-		height: 31px;
-      min-width: 300px;
+  margin: 7px 0px;
+  width: 50%;
+  height: 31px;
+  min-width: 300px;
 }
 
 .selectBox {
-    float: right;
-    font-size: 25px;
-    position: relative;
-    right: 3px;
+  float: right;
+  font-size: 25px;
+  position: relative;
+  right: 3px;
 }
 
-.primaryBox {    
-  	height: 31px;
-    position: relative;
-    top: 0px;
-    padding: 6px 2px 7px 2px;
-  	margin: -3px -2px 0px 0px;
-    border-radius: 0px 4px 4px 0px;
-    background-color: #1f8476;
+.primaryBox {
+  height: 31px;
+  position: relative;
+  top: 0px;
+  padding: 6px 2px 7px 2px;
+  margin: -3px -2px 0px 0px;
+  border-radius: 0px 4px 4px 0px;
+  background-color: #1f8476;
 }
 
-.inactivePrimaryBox{
-	background-color: #247ba0;
+.inactivePrimaryBox {
+  background-color: #247ba0;
 }
 
 .parentRep {
-		padding-left: 6px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 3px;
-    border-color: #454b4e;
-    background-color: #454b4e;
-    color: white;
-  	padding: 2px 0px 2px 10px;
-  	width: 50%;
-      min-width: 300px;
-  height:31px
+  padding-left: 6px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  border-color: #454b4e;
+  background-color: #454b4e;
+  color: white;
+  padding: 2px 0px 2px 10px;
+  width: 50%;
+  min-width: 300px;
+  height: 31px
 }
 
 /* Style the buttons inside the tab */
 .tab {
   padding: 0px;
-	text-align: center;
+  text-align: center;
   display: flex;
 }
 
@@ -502,178 +506,174 @@ textarea {
 .tab button:hover {
   background-color: #247ba0;
   opacity: 90%
-  
 }
 
 .tab .selected {
-	background-color: #247ba0;
+  background-color: #247ba0;
 }
 
 .tab .notSelected {
-	background-color: #717171;;
-}
-
-.tab .notselected {
-
+  background-color: #717171;
+  ;
 }
 
 .tab .small {
-	  padding:18px 0px;
+  padding: 18px 0px;
 }
+
 /* Create an active/current tablink class */
 .tab button.active {
   background-color: #ccc;
 }
 
-.analyze-new-payload{
-	  text-align: center;
-    margin-top: 42vh;
+.analyze-new-payload {
+  text-align: center;
+  margin-top: 42vh;
 }
 
-.btn.ireButton{
-    color: white;
-    width: 170px;
-    height: 39px;
-    margin: 3px 9px 8px 8px;
-    background-color: #247ba0;
+.btn.ireButton {
+  color: white;
+  width: 170px;
+  height: 39px;
+  margin: 3px 9px 8px 8px;
+  background-color: #247ba0;
 }
-.btn.ireButton:hover{
-	opacity: 90%
+
+.btn.ireButton:hover {
+  opacity: 90%
 }
 
 .btn.ireButton.danger {
-	background-color: #98322a;
+  background-color: #98322a;
 }
 
-.mapList{
-	  font-size: 18px;
-    text-align: center;
-    font-weight: 600;
-    width: 100%;
-    border-radius: 13px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: #d4d4d4;
+.mapList {
+  font-size: 18px;
+  text-align: center;
+  font-weight: 600;
+  width: 100%;
+  border-radius: 13px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d4d4d4;
 }
 
-.mapList:hover{
-	text-decoration: underline;
+.mapList:hover {
+  text-decoration: underline;
   background-color: #247ba0;
   cursor: pointer;
   color: white;
 }
 
-.selectedProperty{
-  	background-color: #247ba0;
-    color: white;
-    font-weight: bold;
-    padding: 4px 9px 5px 7px;
-    text-align: center;
-    font-size: 18px;
-  	margin: 5px 11% 1px;
-    border-radius: 8px;
+.selectedProperty {
+  background-color: #247ba0;
+  color: white;
+  font-weight: bold;
+  padding: 4px 9px 5px 7px;
+  text-align: center;
+  font-size: 18px;
+  margin: 5px 11% 1px;
+  border-radius: 8px;
 }
 
 .searchField {
-		background-color: #ffffff;
-    border-radius: 30px;
-    border: 1px solid #ccc;
-    padding-left: 38px;
-    font-size: 23px;
-    max-width: 0;
-    transition: all 0.3s ease-in-out;
-  	border: none;
-  	box-shadow: none;
+  background-color: #ffffff;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+  padding-left: 38px;
+  font-size: 23px;
+  max-width: 0;
+  transition: all 0.3s ease-in-out;
+  border: none;
+  box-shadow: none;
 }
 
 .filter-header .filter-header-title {
-		position: absolute;
-    top: 10px;
-    left: 122px;
-    color: #dadada;
-    opacity: 0;
-    transition-delay: 0.3s;
-    transition: all 0.3s ease-in-out;
+  position: absolute;
+  top: 10px;
+  left: 122px;
+  color: #dadada;
+  opacity: 0;
+  transition-delay: 0.3s;
+  transition: all 0.3s ease-in-out;
 }
 
 .filter-header-title.filter-header-title-visible {
-    left: 88px;
-    opacity: 1;
+  left: 88px;
+  opacity: 1;
 }
 
 .searchField.searchField-expanded {
-		padding-left: 50px;
-    max-width: 2000px;
+  padding-left: 50px;
+  max-width: 2000px;
 }
 
 .filter-header-search-toggle {
-		height: 34px;
-    width: 45px;
-    position: absolute;
-    top: 10px;
-    left: 12px;
-    border-top-left-radius: 22px;
-    border-bottom-left-radius: 22px;
-    transition: all .3s ease-in-out;
-    box-shadow: none;
-    border: none;
+  height: 34px;
+  width: 45px;
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  border-top-left-radius: 22px;
+  border-bottom-left-radius: 22px;
+  transition: all .3s ease-in-out;
+  box-shadow: none;
+  border: none;
 }
 
 .filter-header {
-    padding: 10px 13px 10px 13px;
-    width: 78%;
-    border-top-left-radius: 8px;
-    margin-bottom: 4px;
-    display: inline-block;
+  padding: 10px 13px 10px 13px;
+  width: 78%;
+  border-top-left-radius: 8px;
+  margin-bottom: 4px;
+  display: inline-block;
 }
-.filterButtonGroup{
-  	display: flex;
-    justify-content: center;
-    align-items: center;
+
+.filterButtonGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .advancedOptions {
-		border-radius: 0px;
-    background-color: #dadada;
-    border: none;
-    margin-bottom: 0px;
-    box-shadow: none;
+  border-radius: 0px;
+  background-color: #dadada;
+  border: none;
+  margin-bottom: 0px;
+  box-shadow: none;
 }
 
 .advancedOptions .panel-body {
-		padding: 5px 5px 0px 5px;
-    display: flex;
-    justify-content: flex-end;
+  padding: 5px 5px 0px 5px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .previewBody {
-	height: 93%;
+  height: 93%;
   //overflow: scroll;
 }
 
 .previewBody pre {
-	height: 100%;
+  height: 100%;
   overflow: scroll;
 }
 
 
 .form-group.model-editor-group {
-    height: 52px;
-    padding: 12px 0px 12px 11px;
-    margin: 0px;
-  	
+  height: 52px;
+  padding: 12px 0px 12px 11px;
+  margin: 0px;
+
 }
 
 .first-model-group {
-	border-top:4px solid #247ba0;
+  border-top: 4px solid #247ba0;
 }
 
 .top-left-border {
-	border-top-left-radius: 5px;
-}
-
-
-</css>
+  border-top-left-radius: 5px;
+}</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -687,7 +687,7 @@ textarea {
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() {
+        <script><![CDATA[(function () {
     /* populate the 'data' object */
     /* e.g., data.table = $sp.getValue('table'); */
 
@@ -706,19 +706,17 @@ textarea {
         if (input.action === 'saveMap') {
             data.saveSuccessFull = map.save(input.propertyName, input.map);
         }
-			
-				if (input.action === "previewOutput") {
-					var processor = new PayloadProcessor();
-					data.previewedOutput = processor.flattenPayload(input.keyArray, input.payloadParsed);
-				}
-			
-				if (input.action === "scriptPreview" && input.keyArray) {
-					var scriptBuilder = new MaplessScriptBuilder(input.keyArray);
-					data.scriptPreview = scriptBuilder.generateScript();
-				}
+
+        if (input.action === "previewOutput") {
+            var processor = new PayloadProcessor();
+            data.previewedOutput = processor.flattenPayload(input.keyArray, input.payloadParsed);
+        }
+
+        if (input.action === "scriptPreview" && input.keyArray) {
+            var scriptBuilder = new MaplessScriptBuilder(input.keyArray);
+            data.scriptPreview = scriptBuilder.generateScript();
+        }
     }
-
-
 
 })();]]></script>
         <servicenow>false</servicenow>
@@ -726,198 +724,220 @@ textarea {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-05-14 13:51:19</sys_created_on>
         <sys_id>f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_id>
-        <sys_mod_count>1269</sys_mod_count>
+        <sys_mod_count>1298</sys_mod_count>
         <sys_name>Mapping Helper</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy/>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sp_widget_f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-05-12 18:49:57</sys_updated_on>
+        <sys_updated_on>2021-06-07 20:45:06</sys_updated_on>
         <template><![CDATA[<div>
- <!-- <pre>{{c.keyArray}}</pre> -->
-  <div style="height: 98vh">
-    <div class="paneContainer col-sm-7">
-        <div class="keyArrayControls">
-            <div class="controls">
-                <div class="form-group has-feedback has-feedback-left filter-header">
-                    <input ng-model="c.searchFilter" placeholder="Search"
-                        class="form-control searchField searchField-expanded">
-                    <button class="filter-header-search-toggle" style="border:none;">
-                        <i class="fa fa-search filter-header-search-icon form-control-feedback" aria-hidden="true"
-                            style="margin: 4px 3px 0px 0px; font-size: 24px;">
-                        </i>
-                    </button>
-                </div>
-                <div class="filterButtonGroup">
-                    <button type="button" class="btn ireButton" data-toggle="modal"
-                        ng-disabled="c.noMapSelected"
-                        ng-click="c.saveMap(c.selectedMapName)">
-                        <span ng-if="!c.savingMap">Save Map <i ng-if="c.successfulSave"
-                                class="fa fa-check-circle-o"></i></span>
-                        <span ng-if="c.savingMap">Saving <i class="fa fa-spinner fa-spin"></i></span>
-                    </button>
+    <!-- <pre>{{c.keyArray}}</pre> -->
+    <div style="height: 98vh">
+        <div class="paneContainer col-sm-7">
+            <div class="keyArrayControls">
+                <div class="controls">
+                    <div class="form-group has-feedback has-feedback-left filter-header">
+                        <input ng-model="c.searchFilter" placeholder="Search"
+                            class="form-control searchField searchField-expanded">
+                        <button class="filter-header-search-toggle" style="border:none;">
+                            <i class="fa fa-search filter-header-search-icon form-control-feedback" aria-hidden="true"
+                                style="margin: 4px 3px 0px 0px; font-size: 24px;">
+                            </i>
+                        </button>
+                    </div>
+                    <div class="filterButtonGroup">
+                        <button type="button" class="btn ireButton" data-toggle="modal" ng-disabled="c.noMapSelected"
+                            ng-click="c.saveMap(c.selectedMapName)">
+                            <span ng-if="!c.savingMap">Save Map <i ng-if="c.successfulSave"
+                                    class="fa fa-check-circle-o"></i></span>
+                            <span ng-if="c.savingMap">Saving <i class="fa fa-spinner fa-spin"></i></span>
+                        </button>
 
-                    <button type="button" class="btn ireButton" ng-click="c.toggleCollapse('advanced_options');">
-                        Advanced
-                    </button>
-                </div>
-            </div>
-            <div class="panel panel-default advancedOptions">
-                <div id="advanced_options" class="panel-collapse collapse">
-                    <div class="panel-body">
-                      
-                      	<button type="button" class="btn ireButton" ng-click="c.toggleSelect(true)">
-                            Select All
-                        </button>
-                      
-                        <button type="button" class="btn ireButton"
-                              ng-click="c.toggleMapplessScriptUsage()">
-                             <i ng-class="{'fa fa-square-o' : !c.maplessScriptUsagage, 'fa fa-check-square-o': c.maplessScriptUsagage}">
-                          </i> Mapless Script Usage
-                          </button>
-                      
-                        <button type="button" class="btn ireButton" data-toggle="modal"
-                            ng-click="c.loadModalType = 'payload'" data-target="#priamryModal">
-                            Set Payload
-                        </button>
-                      
-                      	<button type="button" class="btn ireButton" data-toggle="modal"
-                            ng-click="c.selectExistingMap()" data-target="#priamryModal">
-                            Select New Map
+                        <button type="button" class="btn ireButton" ng-click="c.toggleCollapse('advanced_options');">
+                            Advanced
                         </button>
                     </div>
                 </div>
-            </div>
+                <div class="panel panel-default advancedOptions">
+                    <div id="advanced_options" class="panel-collapse collapse">
+                        <div class="panel-body">
 
-            <div style="padding-bottom: 4px;">
+                            <button type="button" class="btn ireButton" ng-click="c.toggleSelect(true)">
+                                Select All
+                            </button>
 
-                <h3 class="selectedProperty">{{c.selectedMapName.split('.')[1] || 'No Map Selected'}}</h3>
-
-
-            </div>
-
-
-        </div>
-        <div class="col-sm-12 contentPane payloadSelectList customScroll">
-            <div class="col-sm-12 analyze-new-payload" ng-if="!c.keyArray">
-                <h3>
-                    Select a map from the system properties list that you would like to edit.
-                </h3>
-                <button type="button" class="btn ireButton" data-toggle="modal" ng-click="c.selectExistingMap()">Edit
-                    Select Map</button>
-
-            </div>
-            <div ng-if="c.keyArray && c.keyArray.length > 1">
-                <div class="col-sm">
-                    <div ng-hide="element.hidden" id="{{$index}}"
-                        ng-class="{'elementBox canDrag' : !element.parentRep, 'parentRep': element.parentRep}"
-                        ng-repeat="element in c.keyArray"
-                        ng-style="{'margin-left': element.level * 30, 'opacity': element.active ? '100%' : '50%'}">
-                        <div ng-if="!element.parentRep" ng-click="element.active = !element.active; c.previewMapChanges();">
-                            <div class="col-sm">
-                                <span><label><strong>{{element.key}}:</strong> </label>
-                                    <label>{{element.type}}</label></span>
-
-                                <button
-                                    ng-class="{'btn primaryBox' : element.primary, 'btn primaryBox inactivePrimaryBox' : !element.primary}"
-                                    style="float:right;" ng-click="c.setPrimaryToggle(element);">
-                                    <i class="fa fa-key" style="font-size: 19px; margin-top: 0px; margin-left: 4px;"
-                                        ng-if="element.primary"></i>
-                                    <i class="fa fa-minus" style="font-size: 22px; margin: 0px 3px 0px 3px;"
-                                        ng-if="!element.primary"></i>
-                                </button>
-                                <i ng-class="{'fa fa-circle-o selectBox' : !element.active , 'fa fa-check-circle-o selectBox' : element.active}"></i>
-
-
-                            </div>
-
-                        </div>
-                        <div ng-if="element.parentRep">
-                            <div class="col-sm" ng-click="element.active = !element.active; c.previewMapChanges();">
-                                <i ng-class="{'fa fa-caret-right' : !element.showDetails , 'fa fa-caret-down' : element.showDetails}"
-                                    ng-click="element.active = !element.active; c.showHideChildElements(element)"></i>
-                                <label><strong>{{element.key}}:</strong> </label> <label>{{element.type}}</label>
+                            <button type="button" class="btn ireButton" ng-click="c.toggleMaplessScriptUsage()">
                                 <i
-                                    ng-class="{'fa fa-circle-o selectBox' : !element.active , 'fa fa-check-circle-o selectBox' : element.active}"></i>
+                                    ng-class="{'fa fa-square-o' : !c.maplessScriptUsage, 'fa fa-check-square-o': c.maplessScriptUsage}">
+                                </i> Mapless Script Usage
+                            </button>
+
+                            <button type="button" class="btn ireButton" data-toggle="modal"
+                                ng-click="c.loadModalType = 'payload'" data-target="#primaryModal">
+                                Set Payload
+                            </button>
+
+                            <button type="button" class="btn ireButton" data-toggle="modal"
+                                ng-click="c.selectExistingMap()" data-target="#primaryModal">
+                                Select New Map
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding-bottom: 4px;">
+
+                    <h3 class="selectedProperty">{{c.selectedMapName.split('.')[1] || 'No Map Selected'}}</h3>
+
+
+                </div>
+
+
+            </div>
+            <div class="col-sm-12 contentPane payloadSelectList customScroll">
+                <div class="col-sm-12 analyze-new-payload" ng-if="!c.keyArray">
+                    <h3>
+                        Select a map from the system properties list that you would like to edit.
+                    </h3>
+                    <button type="button" class="btn ireButton" data-toggle="modal"
+                        ng-click="c.selectExistingMap()">Edit
+                        Select Map</button>
+
+                </div>
+                <div ng-if="c.keyArray && c.keyArray.length > 1">
+                    <div class="col-sm">
+                        <div ng-hide="element.hidden" id="{{$index}}"
+                            ng-class="{'elementBox canDrag' : !element.parentRep, 'parentRep': element.parentRep}"
+                            ng-repeat="element in c.keyArray"
+                            ng-style="{'margin-left': element.level * 30, 'opacity': element.active ? '100%' : '50%'}">
+                            <div ng-if="!element.parentRep"
+                                ng-click="element.active = !element.active; c.previewMapChanges();">
+                                <div class="col-sm">
+                                    <span><label><strong>{{element.key}}:</strong> </label>
+                                        <label>{{element.type}}</label></span>
+
+                                    <button
+                                        ng-class="{'btn primaryBox' : element.primary, 'btn primaryBox inactivePrimaryBox' : !element.primary}"
+                                        style="float:right;" ng-click="c.setPrimaryToggle(element);">
+                                        <i class="fa fa-key" style="font-size: 19px; margin-top: 0px; margin-left: 4px;"
+                                            ng-if="element.primary"></i>
+                                        <i class="fa fa-minus" style="font-size: 22px; margin: 0px 3px 0px 3px;"
+                                            ng-if="!element.primary"></i>
+                                    </button>
+                                    <i
+                                        ng-class="{'fa fa-circle-o selectBox' : !element.active , 'fa fa-check-circle-o selectBox' : element.active}"></i>
+
+
+                                </div>
+
+                            </div>
+                            <div ng-if="element.parentRep">
+                                <div class="col-sm" ng-click="element.active = !element.active; c.previewMapChanges();">
+                                    <i ng-class="{'fa fa-caret-right' : !element.showDetails , 'fa fa-caret-down' : element.showDetails}"
+                                        ng-click="element.active = !element.active; c.showHideChildElements(element)"></i>
+                                    <label><strong>{{element.key}}:</strong> </label> <label>{{element.type}}</label>
+                                    <button
+                                        ng-class="{'btn primaryBox' : element.primary, 'btn primaryBox inactivePrimaryBox' : !element.primary}"
+                                        style="float:right;" ng-click="c.setPrimaryToggle(element);">
+                                        <i class="fa fa-key" style="font-size: 19px; margin-top: 0px; margin-left: 4px;"
+                                            ng-if="element.primary"></i>
+                                        <i class="fa fa-minus" style="font-size: 22px; margin: 0px 3px 0px 3px;"
+                                            ng-if="!element.primary"></i>
+                                    </button>
+                                    <i
+                                        ng-class="{'fa fa-circle-o selectBox' : !element.active , 'fa fa-check-circle-o selectBox' : element.active}"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="paneContainer col-sm-5">
+            <div class="contentPane previewPane" style="background-color: #f5f5f5;">
+                <div class="tab">
+                    <button
+                        ng-class="{'tablinks selected small' : c.previewPaneType ==='ModelEditor' , 'tablinks small notSelected': c.previewPaneType !== 'ModelEditor'}"
+                        ng-click="c.previewPaneType ='ModelEditor'">Model Editor</button>
+
+                    <button
+                        ng-class="{'tablinks selected small' : c.previewPaneType ==='Preview' , 'tablinks small notSelected': c.previewPaneType !== 'Preview'}"
+                        ng-click="c.previewPaneType ='Preview'">Preview</button>
+                    <button
+                        ng-class="{'tablinks selected small' : c.previewPaneType ==='ScriptUsage' , 'tablinks small notSelected': c.previewPaneType !== 'ScriptUsage'}"
+                        ng-click="c.previewPaneType ='ScriptUsage'">Script Usage</button>
+                </div>
+                <div class="previewBody customScroll" style="overflow: scroll;"
+                    ng-show="c.previewPaneType === 'ModelEditor'">
+                    <div>
+                        <div ng-repeat="group in c.arrayLocations">
+                            <div ng-repeat="key in c.keyArray | filter:{active: true, group: group}">
+                                <h4 ng-if="$index === 0">
+                                    <strong>{{group.key}}</strong>
+                                </h4>
+                                <div class="form-group model-editor-group col-md-4"
+                                    ng-class="{'first-model-group top-left-border' : $index == 0}"
+                                    style="border-left: 4px solid #247ba0;">
+                                    <label>{{key.key}}</label>
+                                </div>
+                                <div class="form-group model-editor-group col-md-2"
+                                    ng-class="{'first-model-group' : $index == 0}">
+                                    <label>{{key.type}}</label>
+                                </div>
+                                <div class="form-group model-editor-group col-md-6"
+                                    ng-class="{'first-model-group' : $index == 0}">
+                                    <input class="form-control" ng-model="key.targetColumn"
+                                        ng-change="c.previewMapChanges();">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div>
+                            <div ng-repeat="key in c.keyArray | filter:{active: true, group: 'root'}">
+                                <h4 ng-if="$index === 0">
+                                    <strong>Root</strong>
+                                </h4>
+                                <div class="form-group model-editor-group col-md-4"
+                                    ng-class="{'first-model-group top-left-border' : $index == 0}"
+                                    style="border-left: 4px solid #247ba0;">
+                                    <label>{{key.key}}</label>
+                                </div>
+                                <div class="form-group model-editor-group col-md-2"
+                                    ng-class="{'first-model-group' : $index == 0}">
+                                    <label>{{key.type}}</label>
+                                </div>
+                                <div class="form-group model-editor-group col-md-6"
+                                    ng-class="{'first-model-group' : $index == 0}">
+                                    <input class="form-control" ng-model="key.targetColumn"
+                                        ng-change="c.previewMapChanges();">
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                </div>
-            </div>
+                <div class="previewBody" ng-show="c.previewPaneType === 'Preview'">
+                    <div class="col-sm-12 analyze-new-payload" ng-if="!c.previewedOutput">
+                        <h3>
+                            To preview the output, add a sample payload here.
+                        </h3>
+                        <button type="button" class="btn ireButton" data-toggle="modal" data-target="#primaryModal"
+                            data-toggle="modal" ng-click="c.loadModalType = 'payload'">Set Payload</button>
 
-        </div>
-    </div>
-  <div class="paneContainer col-sm-5">
-    <div class="contentPane previewPane" style ="background-color: #f5f5f5;">
-    	<div class="tab">
-        <button
-                ng-class="{'tablinks selected small' : c.previewPaneType ==='ModelEditor' , 'tablinks small notSelected': c.previewPaneType !== 'ModelEditor'}"
-                ng-click="c.previewPaneType ='ModelEditor'">Model Editor</button>
-        
-        <button
-                ng-class="{'tablinks selected small' : c.previewPaneType ==='Preview' , 'tablinks small notSelected': c.previewPaneType !== 'Preview'}"
-                ng-click="c.previewPaneType ='Preview'">Preview</button>
-        <button
-                ng-class="{'tablinks selected small' : c.previewPaneType ==='ScriptUsage' , 'tablinks small notSelected': c.previewPaneType !== 'ScriptUsage'}"
-                ng-click="c.previewPaneType ='ScriptUsage'">Script Usage</button>
-      </div>
-      <div class="previewBody customScroll" style="overflow: scroll;"  ng-show="c.previewPaneType === 'ModelEditor'">
-        <div>
-          <div ng-repeat="group in c.arrayLocations">
-              <div ng-repeat="key in c.keyArray | filter:{active: true, group: group}">
-                <h4 ng-if="$index === 0" >
-                  <strong>{{group.key}}</strong>
-                </h4>
-                  <div class="form-group model-editor-group col-md-4" ng-class="{'first-model-group top-left-border' : $index == 0}" style="border-left: 4px solid #247ba0;">
-                    <label>{{key.key}}</label>
-                  </div>
-                  <div class="form-group model-editor-group col-md-2" ng-class="{'first-model-group' : $index == 0}">
-                    <label>{{key.type}}</label>
-                  </div>
-                  <div class="form-group model-editor-group col-md-6" ng-class="{'first-model-group' : $index == 0}">
-                    <input class="form-control" ng-model="key.targetColumn" ng-change="c.previewMapChanges();">
-                  </div>
-            </div>
-            
-          </div>
-           <div>
-            <div ng-repeat="key in c.keyArray | filter:{active: true, group: 'root'}">
-                <h4 ng-if="$index === 0">
-                  <strong>Root</strong>
-                </h4>
-                 <div class="form-group model-editor-group col-md-4" ng-class="{'first-model-group top-left-border' : $index == 0}" style="border-left: 4px solid #247ba0;">
-                  <label>{{key.key}}</label>
-                </div>
-                <div class="form-group model-editor-group col-md-2" ng-class="{'first-model-group' : $index == 0}">
-                  <label>{{key.type}}</label>
-                </div>
-                <div class="form-group model-editor-group col-md-6" ng-class="{'first-model-group' : $index == 0}">
-                  <input class="form-control" ng-model="key.targetColumn" ng-change="c.previewMapChanges();">
-                </div>
-          </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="previewBody" ng-show="c.previewPaneType === 'Preview'">
-         <div class="col-sm-12 analyze-new-payload" ng-if="!c.previewedOutput">
-                <h3>
-                    To preview the output, add a sample payload here.
-                </h3>
-           <button type="button" class="btn ireButton" data-toggle="modal" data-target="#priamryModal" data-toggle="modal" ng-click="c.loadModalType = 'payload'">Set Payload</button>
+                    </div>
 
-            </div>
-        
-        
-        <pre ng-show="c.previewedOutput" class="customScroll" id="previewedOutput">
+
+                    <pre ng-show="c.previewedOutput" class="customScroll" id="previewedOutput">
         </pre>
-      </div>
-      
-      <div class="previewBody"  ng-show="c.previewPaneType === 'ScriptUsage'">
-        <pre class="customScroll" ng-if="!c.maplessScriptUsagage">
-        	
+                </div>
+
+                <div class="previewBody" ng-show="c.previewPaneType === 'ScriptUsage'">
+                    <pre class="customScroll CodeMirror" ng-if="!c.maplessScriptUsage">
+
 Call the payload flattener class and pass in the propertyName to initialize the map to be used for processing
 var flattener = new PayloadFlattener("{{c.selectedMapName}}");
 
@@ -931,34 +951,35 @@ var result = flattener.process(object);
 //var result = flattener.processArray(object);
           
         </pre>
-        <pre class="customScroll" ng-if="c.maplessScriptUsagage">
+                    <pre class="customScroll CodeMirror" ng-if="c.maplessScriptUsage">
         	{{c.previewedScript}}
         </pre>
-      </div>
-      
+                </div>
+
+            </div>
+        </div>
     </div>
-  </div>
-  </div>
-    
+
 </div>
 
 
 
-<div class="modal fade" id="priamryModal" role="dialog">
+<div class="modal fade" id="primaryModal" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->
         <div class="modal-content" ng-show="c.loadModalType === 'payload'">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title selectedProperty ">Analyze Paylod</h4>
+                <h4 class="modal-title selectedProperty ">Analyze Payload</h4>
             </div>
             <div class="modal-body">
                 <p><strong>Paste you example payload here and click analyze.</strong></p>
                 <textarea style="width: 100%; height: 533px;" ng-model="c.payload"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn ireButton" style="background-color: #454b4e;" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn ireButton" style="background-color: #454b4e;"
+                    data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn ireButton" ng-click="c.analyzePayload(c.payload)">Analyze</button>
             </div>
         </div>
@@ -971,8 +992,9 @@ var result = flattener.process(object);
             <div class="modal-body text-center">
                 <p><strong>Select one of the system properties that stores mapping data that you want to edit</strong>
                 </p>
-              <label class="mapList" ng-click="c.loadSavedMap(-1)">Mapless</label>
-              <label ng-repeat="map in c.savedMaps" class="mapList" ng-click="c.loadSavedMap($index)">{{map.suffix}}</label>
+                <label class="mapList" ng-click="c.loadSavedMap(-1)">Mapless</label>
+                <label ng-repeat="map in c.savedMaps" class="mapList"
+                    ng-click="c.loadSavedMap($index)">{{map.suffix}}</label>
             </div>
         </div>
 

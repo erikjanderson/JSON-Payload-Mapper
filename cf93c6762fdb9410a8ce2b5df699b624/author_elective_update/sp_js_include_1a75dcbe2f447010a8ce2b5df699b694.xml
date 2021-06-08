@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_js_include">
+    <sp_js_include action="DELETE">
+        <display_name>widgetMacros</display_name>
+        <source>local</source>
+        <sys_class_name>sp_js_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:09:15</sys_created_on>
+        <sys_id>1a75dcbe2f447010a8ce2b5df699b694</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>widgetMacros</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_ui_script/>
+        <sys_update_name>sp_js_include_1a75dcbe2f447010a8ce2b5df699b694</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:09:15</sys_updated_on>
+        <url/>
+    </sp_js_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sp_js_include_1a75dcbe2f447010a8ce2b5df699b694</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_js_include"><sp_js_include action="INSERT_OR_UPDATE"><display_name>widgetMacros</display_name><source>local</source><sys_class_name>sp_js_include</sys_class_name><sys_created_by>erik.anderson</sys_created_by><sys_created_on>2021-05-14 14:09:15</sys_created_on><sys_id>1a75dcbe2f447010a8ce2b5df699b694</sys_id><sys_mod_count>0</sys_mod_count><sys_name>widgetMacros</sys_name><sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package><sys_policy/><sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope><sys_ui_script/><sys_update_name>sp_js_include_1a75dcbe2f447010a8ce2b5df699b694</sys_update_name><sys_updated_by>erik.anderson</sys_updated_by><sys_updated_on>2021-05-14 14:09:15</sys_updated_on><url/></sp_js_include></record_update>]]></payload>
+        <payload_hash>-1869514609</payload_hash>
+        <record_name>widgetMacros</record_name>
+        <reverted_from/>
+        <source>15aa67072f371010a8ce2b5df699b6df</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:22:32</sys_created_on>
+        <sys_id>d89850b22f847010a8ce2b5df699b632</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1796b41ebc10000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:22:32</sys_updated_on>
+        <type>JS Include</type>
+        <update_guid>2d8510feeb4470109954e6b04d553945</update_guid>
+        <update_guid_history>2d8510feeb4470109954e6b04d553945:1206519439,2d8510feeb4470109954e6b04d553945:1206519439</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="widgetMacros">3d9850b22f847010a8ce2b5df699b67c</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:22:38</sys_created_on>
+        <sys_db_object display_value="" name="sp_js_include">sp_js_include</sys_db_object>
+        <sys_id>1b0da257e29240dab3aced8c8e72fec9</sys_id>
+        <sys_metadata>1a75dcbe2f447010a8ce2b5df699b694</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>widgetMacros</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sp_js_include_1a75dcbe2f447010a8ce2b5df699b694</sys_update_name>
+        <sys_update_version display_value="sp_js_include_1a75dcbe2f447010a8ce2b5df699b694">d89850b22f847010a8ce2b5df699b632</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:22:38</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
