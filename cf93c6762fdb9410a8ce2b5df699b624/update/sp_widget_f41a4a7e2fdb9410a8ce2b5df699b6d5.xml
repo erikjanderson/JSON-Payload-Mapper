@@ -697,7 +697,9 @@
         var payloadScanner = new PayloadScanner();
 
         if (input.action === 'analyzePayload' && input.payload) {
-            data.array = payloadScanner.analyzePayload(input.payload);
+            var returnObj = payloadScanner.analyzePayload(input.payload);
+            data.array = returnObj.keyArray;
+            //data.overrideObject = returnObj.newObj;
         }
         if (input.action === 'loadMaps') {
 
@@ -709,7 +711,12 @@
 
         if (input.action === "previewOutput") {
             var processor = new PayloadProcessor();
-            data.previewedOutput = processor.flattenPayload(input.keyArray, input.payloadParsed);
+            if(Array.isArray(input.payloadParsed)){
+                data.previewedOutput = processor.flattenPayload(input.keyArray, input.payloadParsed[0]);
+            }else{
+                data.previewedOutput = processor.flattenPayload(input.keyArray, input.payloadParsed);
+            }
+            
         }
 
         if (input.action === "scriptPreview" && input.keyArray) {
@@ -724,14 +731,14 @@
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-05-14 13:51:19</sys_created_on>
         <sys_id>f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_id>
-        <sys_mod_count>1298</sys_mod_count>
+        <sys_mod_count>1320</sys_mod_count>
         <sys_name>Mapping Helper</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy/>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sp_widget_f41a4a7e2fdb9410a8ce2b5df699b6d5</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-06-07 20:45:06</sys_updated_on>
+        <sys_updated_on>2021-06-10 20:38:28</sys_updated_on>
         <template><![CDATA[<div>
     <!-- <pre>{{c.keyArray}}</pre> -->
     <div style="height: 98vh">

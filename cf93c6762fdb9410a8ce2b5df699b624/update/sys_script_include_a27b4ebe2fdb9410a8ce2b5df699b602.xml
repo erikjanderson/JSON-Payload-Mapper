@@ -32,7 +32,10 @@ PayloadScanner.prototype = {
 			obj = JSON.parse(tempString);
 			var keyObj = this.scanObject(obj, 0);
 			var array = this.polishObj(keyObj);
-			return array;
+			return {
+				"keyArray": array,
+				"newObj": obj
+			}
 		}catch(e){
 			gs.error(JSON.stringify(e));
 		}
@@ -53,7 +56,7 @@ PayloadScanner.prototype = {
 		for(var key in obj){
 			var newStack = this.getStack(key, stack);
 			var type = this.getType(obj[key]);
-			if(type.val === 'object'){
+			if(type.val === 'object' && type.val != null){
 				arrayObj[newStack] = new this.PayloadElement(newStack, key, obj[key], level, type.val, this.includeSampleValue);
 				arrayObj = this.scanObject(obj[key], level + 1, newStack, arrayObj);
 			}else if(type.val === 'array' && type.isComplexArray){
@@ -98,6 +101,8 @@ PayloadScanner.prototype = {
 						type.isComplexArray = true;
 					}
 				}
+			}else if(val == null){
+				type.val = "null";
 			}
 		}
 		return type;
@@ -133,7 +138,7 @@ PayloadScanner.prototype = {
 			this.maxLength = 40;
 		}
 		if(includeSampleVal){
-			this.sampe_value = tempVal;
+			this.sample_value = tempVal;
 		}
 		if(type == 'object' || type == 'array'){
 			this.parentRep = true;
@@ -153,13 +158,13 @@ PayloadScanner.prototype = {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-09-20 19:46:34</sys_created_on>
         <sys_id>a27b4ebe2fdb9410a8ce2b5df699b602</sys_id>
-        <sys_mod_count>25</sys_mod_count>
+        <sys_mod_count>31</sys_mod_count>
         <sys_name>PayloadScanner</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sys_script_include_a27b4ebe2fdb9410a8ce2b5df699b602</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-05-18 18:26:28</sys_updated_on>
+        <sys_updated_on>2021-06-09 19:46:47</sys_updated_on>
     </sys_script_include>
 </record_update>
