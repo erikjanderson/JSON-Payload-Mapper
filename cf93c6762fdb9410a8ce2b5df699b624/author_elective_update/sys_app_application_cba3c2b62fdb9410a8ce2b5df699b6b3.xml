@@ -52,7 +52,7 @@
         <update_guid_history>cae38eb6e5db94103b84b9beace2ab04:-954535397</update_guid_history>
     </sys_update_version>
     <sys_metadata_delete action="INSERT_OR_UPDATE">
-        <sys_audit_delete display_value="Payload Mapper">6a380efa2fdb9410a8ce2b5df699b605</sys_audit_delete>
+        <sys_audit_delete display_value="">6a380efa2fdb9410a8ce2b5df699b605</sys_audit_delete>
         <sys_class_name>sys_metadata_delete</sys_class_name>
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-09-20 19:32:08</sys_created_on>

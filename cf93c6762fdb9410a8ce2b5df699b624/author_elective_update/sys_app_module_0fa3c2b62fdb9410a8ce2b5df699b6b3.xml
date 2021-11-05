@@ -65,7 +65,7 @@
         <update_guid_history>5ae38eb6e8db941068ccd275cddc5207:409617722</update_guid_history>
     </sys_update_version>
     <sys_metadata_delete action="INSERT_OR_UPDATE">
-        <sys_audit_delete display_value="Map Builder">5238cafa2fdb9410a8ce2b5df699b6c7</sys_audit_delete>
+        <sys_audit_delete display_value="">5238cafa2fdb9410a8ce2b5df699b6c7</sys_audit_delete>
         <sys_class_name>sys_metadata_delete</sys_class_name>
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2020-09-20 19:32:07</sys_created_on>

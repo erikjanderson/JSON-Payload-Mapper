@@ -64,7 +64,7 @@ MaplessScriptBuilder.prototype = {
 				if(mapField.primary){
 					this.primaryList[mapField.stack] = mapField;
 				}
-                this.addField(mapField, mapField.stack.split("."), obj, 0);
+                this.addField(mapField, mapField.stack.split(":::"), obj, 0);
             }
         }
         return obj;
@@ -82,7 +82,7 @@ MaplessScriptBuilder.prototype = {
 			}
         } else {
             if (normPos.indexOf("[]") === -1) {
-                normPos += ".{}";
+                normPos += ":::{}";
             }
             if (!obj.fields[normPos]) {
                 obj.fields[normPos] = {};
@@ -155,42 +155,44 @@ MaplessScriptBuilder.prototype = {
     },
 	
 	addValAssignments: function(obj, key, field, tabLevel, objectName, inherits, fieldInherits){
-		var keyArray = key.split(".");
+		gs.info("YO:" + key);
+		var keyArray = key.split(":::");
 		var keyVal = keyArray[0];
 		var internalKeyVal = keyVal.replace(/ /g, "");
 		var ogInherits = this._copyArray(inherits);
+		var cleanInternalKeyValue = this._camelCaseName(internalKeyVal);
 		if (keyArray[1] && keyArray[1] === "{}") {//this._cleanTarget("obj", field.targetColumn)
-			obj.str += this._newLine(tabLevel) + "var " + internalKeyVal + " = " + this._cleanTarget(objectName, keyVal) + ";";
-			obj.str += this._newLine(tabLevel) + "if (" + internalKeyVal + ") {";
+			obj.str += this._newLine(tabLevel) + "var " + cleanInternalKeyValue + " = " + this._cleanTarget(objectName, keyVal) + ";";
+			obj.str += this._newLine(tabLevel) + "if (" + cleanInternalKeyValue + ") {";
 			var newObj = this.buildFunction(field, tabLevel + 1, internalKeyVal, true, inherits);
 			obj.str += newObj.str;
 			obj.functionCallStr += newObj.functionCallStr;
 			obj.initVarStr += newObj.initVarStr;
 			obj.str += this._newLine(tabLevel) + "}";
 		} else if (keyArray[1] && keyArray[1] === "[]") {
-			obj.str += this._newLine(tabLevel) + internalKeyVal + " = " + this._cleanTarget(objectName, keyVal)+ ";";
-			obj.initVarStr += this._newLine(tabLevel) + "var " + internalKeyVal + ";";
-			obj.functionCallStr += this._newLine(1) + "this.get" + this._capitalize(internalKeyVal) + "Array(" + internalKeyVal + this.getPassThroughVariables(ogInherits) +");";
-			this.buildArrayFunction(field, internalKeyVal, ogInherits, fieldInherits);
+			obj.str += this._newLine(tabLevel) + cleanInternalKeyValue + " = " + this._cleanTarget(objectName, keyVal)+ ";";
+			obj.initVarStr += this._newLine(tabLevel) + "var " + cleanInternalKeyValue + ";";
+			obj.functionCallStr += this._newLine(1) + "this.get" + this._capitalize(cleanInternalKeyValue) + "Array(" + cleanInternalKeyValue + this.getPassThroughVariables(ogInherits) +");";
+			this.buildArrayFunction(field, cleanInternalKeyValue, ogInherits, fieldInherits);
 		} else {
 			if(field.primary){
 				if(field.type === "object" || field.type === "array"){
-					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + "JSON = " + "JSON.stringify(" + field.key + ");";
+					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + "JSON = " + "JSON.stringify(" + this._camelCaseName(field.key) + ");";
 				}else{
-					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + " = " + objectName + "." + field.key + ";";
+					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + " = " + this._cleanTarget(objectName, field.key) + ";";
 				}
 			}
 			if(field.type === "object" || field.type === "array"){
 				if(field.primary){
 					obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + this._camelCaseName(field.stack) + "JSON" + ";";
 				}else{
-					obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = JSON.stringify(" + field.key + ");";
+					obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = JSON.stringify(" + this._camelCaseName(field.key) + ");";
 				}
 				
 			}else if(field.simpleArrayVal){
 				obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + objectName + ";";
 			}else{
-				obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + objectName + "." + field.key + ";";
+				obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + this._cleanTarget(objectName, field.key) + ";";
 			}
 			
 		}
@@ -273,7 +275,7 @@ MaplessScriptBuilder.prototype = {
 
     _normalizePosition: function(position, finalPosition) {
         if (this.arrayInventory[position] && !finalPosition) {
-            return position + ".[]";
+            return position + ":::[]";
         } else {
             return position;
         }
@@ -300,7 +302,7 @@ MaplessScriptBuilder.prototype = {
 	
 	_camelCaseName: function(name){
 		var str = "";
-		var nameArray = name.split(".");
+		var nameArray = name.split(/:::|\./);
 		for(var i = 0; i < nameArray.length; i++){
 			if(i === 0){
 				str += nameArray[i];
@@ -324,7 +326,8 @@ MaplessScriptBuilder.prototype = {
 	},
 
     _cleanTarget: function(objName, targetColumn){
-        if(targetColumn.indexOf(" ") > -1){
+		gs.info(objName + " :: " + targetColumn);
+        if(targetColumn.indexOf(" ") > -1 || targetColumn.indexOf(".") > -1){
             return objName + "[\"" + targetColumn + "\"]";
         }else{
             return objName + "." + targetColumn;
@@ -355,13 +358,13 @@ MaplessScriptBuilder.prototype = {
         <sys_created_by>erik.anderson</sys_created_by>
         <sys_created_on>2021-04-29 23:53:26</sys_created_on>
         <sys_id>81ca490a2f372010a8ce2b5df699b688</sys_id>
-        <sys_mod_count>237</sys_mod_count>
+        <sys_mod_count>247</sys_mod_count>
         <sys_name>MaplessScriptBuilder</sys_name>
         <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
         <sys_update_name>sys_script_include_81ca490a2f372010a8ce2b5df699b688</sys_update_name>
         <sys_updated_by>erik.anderson</sys_updated_by>
-        <sys_updated_on>2021-05-21 17:51:47</sys_updated_on>
+        <sys_updated_on>2021-08-17 17:09:49</sys_updated_on>
     </sys_script_include>
 </record_update>
