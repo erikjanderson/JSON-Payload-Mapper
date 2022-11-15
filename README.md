@@ -35,4 +35,26 @@ Form Overview
  4. Name of the current map
  5. Schema view: Shows an intented view of the scanned object making it easier to see the overall strucutre of the object including types and the ability to collaps individual sections.
  6. Model Editor Section: Allows you to modify the property names when they are converted into a flattened object.
+ 7. Preview Section: As you make changes to the map a sample output will be shown here.
+ 8. Script Usage Section: Generated script either showing how to use the PayloadFlattener class with the saved map directly within the scoped application, or an exportable script that you can copy and use in any ServiceNow instance.
+
+## Using The Payload Mapper
+Once you have imported and analysed  a payload, you can now begin configuring the map to your needs.
+
+### Selecting Object Schema Properties
+The left pane contains the schema view for whichever map you are editing. Here you can check whichever parts of the schema you want to extract into your flattened object. 
+Schema object types
+
+![](Docs/Payload%20Mapper%20%28Property%20Elements%29.png)
+
+ - Basic Property: Any blue property element represents a basic property in the payload.
+ - Object Property: Grey property elements with the type "object". These represent some sort of sub-object within the main payload.  Checking these properties will stringify into the object rather than dot walking into it. 
+	 - Note: you are still able to check the object property element along with any of the child elements of that checked object property.
+ - Array Property:  Grey property elements with the type "array". These represent arrays and either the objects or simple properties that live under them.
+	 - Selecting a sub item under an array object means that when the mapper is flattening the payload, it will extract this array out of the root object and into its own object.
+- Key Properties: Any property elements that have the green key icon on set on them identify these properties as key identifiers. This means that any extracted payload such as a sub-array items will have these properties propigated down to them. This way when you are looking at all of the items next to eachother. You can easily tell which sub array item were once apart of the root object.
+
+
+
+
 
