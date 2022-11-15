@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_wizard_answer">
+    <sys_wizard_answer action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <answer>ITS Validation Rule</answer>
+        <button_label/>
+        <dependent_value/>
+        <element/>
+        <name>ITS Validation Rule</name>
+        <next_question/>
+        <order>100</order>
+        <payload_name/>
+        <question display_value="">033e9a03db00101095ea53184b961909</question>
+        <roles/>
+        <script/>
+        <sys_class_name>sys_wizard_answer</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-02-17 14:49:39</sys_created_on>
+        <sys_id>b606ed0b2f166010a8ce2b5df699b689</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>ITS Validation Rule</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_wizard_answer_b606ed0b2f166010a8ce2b5df699b689</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-02-17 14:49:39</sys_updated_on>
+        <table/>
+        <target_url>u_its_validation_rule.do</target_url>
+        <type>1</type>
+    </sys_wizard_answer>
+</record_update>

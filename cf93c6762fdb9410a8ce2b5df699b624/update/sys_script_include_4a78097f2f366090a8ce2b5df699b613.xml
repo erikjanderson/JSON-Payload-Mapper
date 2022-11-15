@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_156954_payload_m.PayloadFlattener</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>PayloadFlattener</name>
+        <script><![CDATA[var PayloadFlattener = Class.create();
+PayloadFlattener.prototype = {
+    initialize: function(propertyName) {
+		this.processor = new PayloadProcessor();
+		if(propertyName){
+			var mapString = gs.getProperty(propertyName);
+			if(mapString){
+				this.mapArray = JSON.parse(mapString);
+			}
+		}
+    },
+	
+	process: function(payload){
+		if(payload && this.mapArray){
+			var responseArray = this.processor.flattenPayload(this.mapArray, payload, this.primaryTypeName);
+			return responseArray;
+		}
+	},
+	
+	processArray: function(payloadArray){
+		if(payloadArray && payloadArray.length && this.mapArray){
+			var returnArray = [];
+			for(var i = 0; i < payloadArray.length; i++){
+				var payloadResponseArray = this.process(payloadArray[i]);
+				returnArray = returnArray.concat(payloadResponseArray);
+			}
+			return returnArray;
+		}
+	},
+	
+	setPrimaryTypeName: function(name){
+		this.primaryTypeName = name;
+	},
+
+    type: 'PayloadFlattener'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-03-16 17:16:56</sys_created_on>
+        <sys_id>4a78097f2f366090a8ce2b5df699b613</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>PayloadFlattener</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_include_4a78097f2f366090a8ce2b5df699b613</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-03-16 17:30:14</sys_updated_on>
+    </sys_script_include>
+</record_update>

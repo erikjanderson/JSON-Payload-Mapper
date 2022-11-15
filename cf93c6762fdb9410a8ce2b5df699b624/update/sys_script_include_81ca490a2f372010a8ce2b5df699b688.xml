@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_156954_payload_m.MaplessScriptBuilder</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Build a script that will be designed to parse object info based on map selections this will prevent the need to carry around a map tool with ambiguous logic that customers may have trouble understanding.</description>
+        <name>MaplessScriptBuilder</name>
+        <script><![CDATA[var MaplessScriptBuilder = Class.create();
+MaplessScriptBuilder.prototype = {
+    initialize: function(mapArray) {
+        this.setMap(mapArray);
+        this.arrayInventory = {};
+        this.functionList = {};
+		this.primaryList = {};
+		this.rootObjectName = "root";
+    },
+	
+    setMap: function(mapArray) {
+        if (mapArray) {
+            this.map = mapArray;
+        }
+    },
+
+    generateScript: function() {
+        var scriptString = "";
+        var finishedObj = this.buildFunctionObject();
+		gs.info(JSON.stringify(finishedObj));
+        if (finishedObj) {
+            this.buildFunction(finishedObj, 1, this.rootObjectName);
+            return this.reportFunctionList();
+        }
+    },
+
+    reportFunctionList: function() {
+        var str = "";
+        if (this.functionList) {
+			var reversedKeyNames = Object.keys(this.functionList).reverse();
+			for(var i = 0; i < reversedKeyNames.length; i++){
+				if(i != 0){
+					str += "\n\n";
+				}
+				str +=  this.functionList[reversedKeyNames[i]];
+			}
+			str += "\n\n" + this._addObjectFunction();
+			str += "\n\n" + this.buildInitColumnFunction();
+        }
+        return str;
+    },
+
+    buildFunctionObject: function() {
+        var obj = {
+			inherits: {},
+			fields: {}
+		};
+        for (var i = 0; i < this.map.length; i++) {
+            var mapField = this.map[i];
+            if (mapField.type === "array") {
+                this.arrayInventory[mapField.key] = true;
+            }
+			
+            if (mapField.active) {
+				if(mapField.primary){
+					this.primaryList[mapField.stack] = mapField;
+				}
+                this.addField(mapField, mapField.stack.split(":::"), obj, 0);
+            }
+        }
+        return obj;
+    },
+
+
+    addField: function(field, stackArray, obj, index, returnInherits) {
+        var pos = stackArray[index];
+        var normPos = this._normalizePosition(pos, (!stackArray[index + 1]));
+		
+        if (!stackArray[index + 1] && field.type != "array" && field.type !== "object") {
+			obj.fields[normPos] = field;
+			if(field.primary){
+				obj.inherits[normPos] = field;
+			}
+        } else {
+            if (normPos.indexOf("[]") === -1) {
+                normPos += ":::{}";
+            }
+            if (!obj.fields[normPos]) {
+                obj.fields[normPos] = {};
+				obj.fields[normPos] = {
+					"inherits": {},
+					"fields": {}
+				};
+            }
+			if(!stackArray[index + 1] && (field.type === "array" || field.type === "object")){
+				obj.fields[normPos].fields[pos] = field;
+				if(field.primary){
+					obj.inherits[normPos] = field;
+				}
+			}else if(normPos.indexOf("{}") > -1){
+				var inherits = this.addField(field, stackArray, obj.fields[normPos], index + 1, true);
+				for(var inheritKey in inherits){
+					obj.inherits[inheritKey] = inherits[inheritKey];
+				}
+			}else{
+				this.addField(field, stackArray, obj.fields[normPos], index + 1);
+			}
+            
+        }
+		var inheritsToReturn = this._makeObjectCopy(obj.inherits);
+		if(returnInherits){
+			obj.inherits = {};
+		}
+        return inheritsToReturn;
+    },
+
+
+    buildFunction: function(fieldList, tabLevel, objectName, returnString, inherits) {
+		if(!inherits){
+			inherits = [];
+		}
+        var obj = {
+			str: "",
+			functionCallStr: "",
+			initVarStr: ""
+		}; 
+		for(var inheritKey in fieldList.inherits){
+			var inheritVarName = this._camelCaseName(fieldList.inherits[inheritKey].stack);
+			if(fieldList.inherits[inheritKey].type === "array" || fieldList.inherits[inheritKey].type === "object"){
+				obj.initVarStr+=this._newLine(tabLevel) + "var " + inheritVarName + "JSON;";
+			}else{
+				obj.initVarStr+=this._newLine(tabLevel) + "var " + inheritVarName + ";";
+			}
+			
+			inherits.push(fieldList.inherits[inheritKey]);
+		}
+        for (var key in fieldList.fields) {
+            var field = fieldList.fields[key];
+            this.addValAssignments(obj, key, field, tabLevel, objectName, inherits, fieldList.inherits);
+        }
+        if (returnString) {
+            return obj;
+        } else {
+            var finalString = "";
+            finalString += this._newLine(tabLevel - 1) + "get" + this._capitalize(objectName) + ": function(" + objectName + "){";
+			finalString += this._newLine(tabLevel) + "this.flattened"+ this._capitalize(this.rootObjectName) + " = [];";
+            finalString += this._newLine(tabLevel) + "var obj = {};";
+			finalString += obj.initVarStr;
+            finalString += obj.str;
+			finalString += this._newLine(tabLevel) + "this.addObject(obj);";
+			finalString += obj.functionCallStr;
+			finalString += this._newLine(tabLevel) + "return this.flattened"+ this._capitalize(this.rootObjectName) + ";";
+            finalString += this._newLine(tabLevel - 1) + "},";
+            this.functionList[objectName] = finalString;
+        }
+    },
+	
+	addValAssignments: function(obj, key, field, tabLevel, objectName, inherits, fieldInherits){
+		gs.info("YO:" + key);
+		var keyArray = key.split(":::");
+		var keyVal = keyArray[0];
+		var internalKeyVal = keyVal.replace(/ /g, "");
+		var ogInherits = this._copyArray(inherits);
+		var cleanInternalKeyValue = this._camelCaseName(internalKeyVal);
+		if (keyArray[1] && keyArray[1] === "{}") {//this._cleanTarget("obj", field.targetColumn)
+			obj.str += this._newLine(tabLevel) + "var " + cleanInternalKeyValue + " = " + this._cleanTarget(objectName, keyVal) + ";";
+			obj.str += this._newLine(tabLevel) + "if (" + cleanInternalKeyValue + ") {";
+			var newObj = this.buildFunction(field, tabLevel + 1, internalKeyVal, true, inherits);
+			obj.str += newObj.str;
+			obj.functionCallStr += newObj.functionCallStr;
+			obj.initVarStr += newObj.initVarStr;
+			obj.str += this._newLine(tabLevel) + "}";
+		} else if (keyArray[1] && keyArray[1] === "[]") {
+			obj.str += this._newLine(tabLevel) + cleanInternalKeyValue + " = " + this._cleanTarget(objectName, keyVal)+ ";";
+			obj.initVarStr += this._newLine(tabLevel) + "var " + cleanInternalKeyValue + ";";
+			obj.functionCallStr += this._newLine(1) + "this.get" + this._capitalize(cleanInternalKeyValue) + "Array(" + cleanInternalKeyValue + this.getPassThroughVariables(ogInherits) +");";
+			this.buildArrayFunction(field, cleanInternalKeyValue, ogInherits, fieldInherits);
+		} else {
+			if(field.primary){
+				if(field.type === "object" || field.type === "array"){
+					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + "JSON = " + "JSON.stringify(" + this._camelCaseName(field.key) + ");";
+				}else{
+					obj.str += this._newLine(tabLevel) + this._camelCaseName(field.stack) + " = " + this._cleanTarget(objectName, field.key) + ";";
+				}
+			}
+			if(field.type === "object" || field.type === "array"){
+				if(field.primary){
+					obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + this._camelCaseName(field.stack) + "JSON" + ";";
+				}else{
+					obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = JSON.stringify(" + this._camelCaseName(field.key) + ");";
+				}
+				
+			}else if(field.simpleArrayVal){
+				obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + objectName + ";";
+			}else{
+				obj.str += this._newLine(tabLevel) + this._cleanTarget("obj", field.targetColumn) + " = " + this._cleanTarget(objectName, field.key) + ";";
+			}
+			
+		}
+		//return str;
+	},
+	
+	getPassThroughVariables: function(inherits){
+		var str = "";
+			for(var i = 0; i < inherits.length; i++){
+				if(inherits[i].type === "array" || inherits[i].type === "object"){
+					str += ", " + this._camelCaseName(inherits[i].stack) + "JSON";
+				}else{
+					str += ", " + this._camelCaseName(inherits[i].stack);
+				}
+				
+			}
+		return str;
+	},
+	
+	getInheritedAssignments: function(inherits){
+		var str = "";
+		if(inherits && inherits.length){
+			for(var i = 0; i < inherits.length; i++){
+				if(inherits[i].type === "array" || inherits[i].type === "object"){
+					str += this._newLine(3) + this._cleanTarget("obj",  inherits[i].targetColumn) + " = " + this._camelCaseName(inherits[i].stack) + "JSON;";
+				}else{
+					str += this._newLine(3) + this._cleanTarget("obj",  inherits[i].targetColumn) + " = " + this._camelCaseName(inherits[i].stack) + ";";
+				}
+				
+			}
+		}
+		return str;
+	},
+
+    buildArrayFunction: function(fieldList, objectName, inherits, fieldInherits) {
+        var str = "";
+        str += this._newLine(0) + "get" + this._capitalize(objectName) + "Array: function(" + objectName + "Array" + this.getPassThroughVariables(inherits) + "){";
+        str += this._newLine(1) + "if (" + objectName + "Array && " + objectName + "Array.length ) {";
+        str += this._newLine(2) + "for (var i = 0; i <" + objectName + "Array.length; i++) {";
+        str += this._newLine(3) + "var " + objectName + " = " + objectName + "Array[i];";
+        str += this._newLine(3) + "var obj = {};";
+		var inheritsAssingments = this.getInheritedAssignments(inherits);
+		var newObj = this.buildFunction(fieldList, 3, objectName, true, inherits);
+		str += newObj.initVarStr;
+		str+= inheritsAssingments;
+		str += newObj.str;
+		str += this._newLine(3) + "this.addObject(obj);";
+		str += newObj.functionCallStr;
+        str += this._newLine(2) + "}";
+        str += this._newLine(1) + "}";
+        str += this._newLine(0) + "},";
+        this.functionList[objectName] = str;
+    },
+	
+	buildInitColumnFunction: function(){
+		var str = "";
+		
+		if(this.map && this.map.length){
+			str += this._newLine(0) + "initializeColumns: function(import_set_table){";
+			for(var i = 0; i < this.map.length; i++){
+				var fieldMap = this.map[i];
+				if(fieldMap.active){
+					if(fieldMap.type === "array" || fieldMap.type === "object"){
+						str += this._newLine(1) + "import_set_table.addJSONColumn(" +"\""+ fieldMap.targetColumn +"\""+", " + fieldMap.maxLength + ");";
+					}else{
+						str += this._newLine(1) + "import_set_table.addColumn(" +"\""+ fieldMap.targetColumn +"\""+", " + fieldMap.maxLength + ");";
+					}
+					
+				}
+			}
+			str += this._newLine(0) + "}";
+			return str;
+		}
+			
+		return str;
+	},
+
+
+    //Internal Functions
+
+    _normalizePosition: function(position, finalPosition) {
+        if (this.arrayInventory[position] && !finalPosition) {
+            return position + ":::[]";
+        } else {
+            return position;
+        }
+    },
+
+    _newLine: function(level) {
+        if (!level) {
+            level = 0;
+        }
+        var str = "\n" + this._getTabs(level);
+        return str;
+    },
+
+    _getTabs: function(level) {
+        if (!level) {
+            level = 0;
+        }
+        var tabs = "";
+        for (var i = 0; i < level; i++) {
+            tabs += "\t";
+        }
+        return tabs;
+    },
+	
+	_camelCaseName: function(name){
+		var str = "";
+		var nameArray = name.split(/:::|\./);
+		for(var i = 0; i < nameArray.length; i++){
+			if(i === 0){
+				str += nameArray[i];
+			}else{
+				str += nameArray[i].charAt(0).toUpperCase() + nameArray[i].slice(1);
+			}
+		}
+		return str;
+	},
+	
+	_capitalize: function(word){
+		return word.charAt(0).toUpperCase() + word.slice(1);
+	},
+	
+	_makeObjectCopy: function(obj){
+		var returnObj = {};
+		for(var key in obj){
+			returnObj[key] = obj[key];
+		}
+		return returnObj;
+	},
+
+    _cleanTarget: function(objName, targetColumn){
+		gs.info(objName + " :: " + targetColumn);
+        if(targetColumn.indexOf(" ") > -1 || targetColumn.indexOf(".") > -1){
+            return objName + "[\"" + targetColumn + "\"]";
+        }else{
+            return objName + "." + targetColumn;
+        }
+    },
+	
+	_addObjectFunction : function(){
+		return "addObject: function (obj) {\n    var keys = Object.keys(obj);\n    for (var i = 0; i < keys.length; i++) {\n        var key = keys[i];\n        if (obj[key] == undefined) {\n            delete obj[key];\n        }\n    }\n    this.flattened"+ this._capitalize(this.rootObjectName) + ".push(obj);\n},";
+	}, 
+	
+	_copyArray: function(array){
+		var returnArray = [];
+		if(array && array.length){
+			for(var i = 0; i < array.length; i++){
+				returnArray.push(array[i]);
+			}
+		}
+		return returnArray;
+	},
+	
+	_newInitVariable: function(field){
+		
+	},
+
+    type: 'MaplessScriptBuilder'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-04-29 23:53:26</sys_created_on>
+        <sys_id>81ca490a2f372010a8ce2b5df699b688</sys_id>
+        <sys_mod_count>247</sys_mod_count>
+        <sys_name>MaplessScriptBuilder</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_include_81ca490a2f372010a8ce2b5df699b688</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-08-17 17:09:49</sys_updated_on>
+    </sys_script_include>
+</record_update>

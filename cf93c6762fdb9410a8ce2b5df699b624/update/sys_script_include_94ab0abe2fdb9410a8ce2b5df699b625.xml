@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_156954_payload_m.PayloadProcessor</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>PayloadProcessor</name>
+        <script><![CDATA[var PayloadProcessor = Class.create();
+PayloadProcessor.prototype = {
+     initialize: function() {
+		this.appScope = gs.getCurrentScopeName();
+    },
+	
+	flattenPayload: function(keyArray, payload, primaryTypeName){
+		this.arrayTrack = {};
+		this.primaryTrack = {};
+		var headID = gs.generateGUID();
+		
+		var flatObj = {};
+		if(primaryTypeName){
+			flatObj[this.appScope + "_type"] = primaryTypeName;
+		}
+		flatObj[this.appScope + "_internal_tracking_id"] = headID;
+		for(var i = 0; i < keyArray.length; i++){
+			var key = keyArray[i];
+			if(key.active == true){
+				var column = key.targetColumn;
+				
+				
+				var returnItem = this.extractValue(key.stack, key.type, payload, null, headID, key.simpleArrayVal);
+				if(Array.isArray(returnItem)){
+					flatObj = this.flattenArray(returnItem, column, flatObj, key.primary);
+				}else{
+					flatObj[column] = returnItem;
+					if(key.primary){
+						if(!this.primaryTrack[headID]){
+							this.primaryTrack[headID]= {};
+						}
+						this.primaryTrack[headID][column] = returnItem;
+					}
+					
+				}
+				
+					
+				//}
+			}
+			
+		}
+		var returnArray = [];
+		for(var arrayKeys in this.arrayTrack){
+			if(flatObj[arrayKeys]){
+				//for(var t = 0; t < 2; t++){
+				for(var t = 0; t < flatObj[arrayKeys].length; t++){
+					if(flatObj[arrayKeys][t]){
+						returnArray.push(flatObj[arrayKeys][t]);
+					}
+				}
+				//returnArray = returnArray.concat(flatObj[arrayKeys]);
+				delete flatObj[arrayKeys];
+			}
+		}
+		returnArray.push(flatObj);
+		
+		returnArray = this.passDownPrimiaryIndentifiers(returnArray);
+		returnArray = this.removeInternalIdentifiers(returnArray);
+		
+		return returnArray;
+	},
+	
+	removeInternalIdentifiers: function(array){
+		for(var i = 0; i < array.length; i++){
+			if(array[i] && array[i][this.appScope + "_internal_parent_id"]){
+				delete array[i][this.appScope + "_internal_parent_id"];
+			}
+			if(array[i] && array[i][this.appScope + "_internal_tracking_id"]){
+				delete array[i][this.appScope + "_internal_tracking_id"];
+			}
+		}
+		return array;
+	},
+	
+	passDownPrimiaryIndentifiers: function(array){
+		for(var internalId in this.primaryTrack){
+			for(var i = 0; i < array.length; i++){
+				if(array[i] && array[i][this.appScope + "_internal_parent_id"]){
+					if(array[i][this.appScope + "_internal_parent_id"].indexOf(internalId) > -1){
+						for(var key in this.primaryTrack[internalId]){
+							array[i][key] = this.primaryTrack[internalId][key];
+						}
+					}
+				}
+			}
+		}
+		return array;
+	},
+	
+	flattenArray: function(returnItem, column, flatObj, primary){
+		for(var t = 0; t < returnItem.length; t++){
+			var element = returnItem[t];
+			if(!flatObj[element.stackTrack]){
+				flatObj[element.stackTrack] = [];
+			}
+			if(!flatObj[element.stackTrack][element.index]){
+				flatObj[element.stackTrack][element.index] = {};
+				flatObj[element.stackTrack][element.index][this.appScope + "_type"] = element.stackTrack;
+			}
+			if(this.getType(element.val).val == 'array'){
+				flatObj = this.flattenArray(element.val, column, flatObj, primary);
+			}else{
+				flatObj[element.stackTrack][element.index][column] = element.val;
+				if(element.arrayTrack && !flatObj[element.stackTrack][element.index][this.appScope + "_internal_tracking_id"]){
+					flatObj[element.stackTrack][element.index][this.appScope + "_internal_tracking_id"] = element.arrayTrack;
+				}
+				if(element.parentTrack && !flatObj[element.stackTrack][element.index][this.appScope + "_internal_parent_id"]){
+					flatObj[element.stackTrack][element.index][this.appScope + "_internal_parent_id"] = element.parentTrack;
+				}
+				
+				if(element.arrayTrack && primary){
+					if(!this.primaryTrack[element.arrayTrack]){
+						this.primaryTrack[element.arrayTrack] = {};
+					}
+					this.primaryTrack[element.arrayTrack][column] = element.val;
+				}
+			}
+			
+		}
+		return flatObj;
+	},
+	
+	extractValue: function(stack, type, payload, stackTrack, parentTrack, simpleArrayVal){
+		if(!Array.isArray(parentTrack)){
+			var holdVal = parentTrack;
+			parentTrack = [holdVal];
+		}
+		var val = payload;
+		if (!Array.isArray(stack)) {
+            stack = stack.split(':::');
+        }
+		if(!simpleArrayVal || stack[0] != "value"){
+			for (var s = 0; s < stack.length; s++) {
+				if(val[stack[s]]){
+					val = val[stack[s]];
+					if(!stackTrack){
+						stackTrack = stack[s];
+					}else{
+						stackTrack = stackTrack + '_' + stack[s];
+					}
+
+					if(this.getType(val).val == 'array'){
+						if(stack[s+1]){
+							var reStack = [];
+							for (var t = s+1; t < stack.length; t++) {
+								reStack.push(stack[t]);
+							}
+							return this.extractArrayValue(reStack, type, val, stackTrack, parentTrack, simpleArrayVal);
+						}
+					}
+				}else{
+					return null;
+				}
+
+			}
+		}
+		
+		if(type === 'object' || type === 'array'){
+			return JSON.stringify(val);
+		}else{
+			return val;
+		}
+	},
+	
+	extractArrayValue: function(stack, type, array, stackTrack, parentTrack, simpleArrayVal){
+		if(!this.arrayTrack[stackTrack.toLowerCase()]){
+			this.arrayTrack[stackTrack.toLowerCase()] = {};
+		}
+		var arrayTrack = [];
+		for(var i = 0; i < array.length; i++){
+			if(!this.arrayTrack[stackTrack.toLowerCase()][i]){
+				this.arrayTrack[stackTrack.toLowerCase()][i] = gs.generateGUID();
+			}
+			var trackObj = {
+				"stackTrack": stackTrack.toLowerCase(),
+				"index": i, 
+				"arrayTrack": this.arrayTrack[stackTrack.toLowerCase()][i]
+			};
+			if(parentTrack){
+				trackObj.parentTrack = parentTrack;
+			}
+			var copyParent = this.copyArray(parentTrack);
+			copyParent.push(this.arrayTrack[stackTrack.toLowerCase()][i]);
+			
+			trackObj.val = this.extractValue(stack, type, array[i], stackTrack, copyParent, simpleArrayVal);
+			
+			arrayTrack.push(trackObj);
+		}
+		return arrayTrack;
+	},
+		
+	getType: function(val) {
+		var type = {};
+		type.val = typeof val;
+		if (type.val === 'object') {
+			if (Array.isArray(val)) {
+				type.val = 'array';
+				if(val[0]){
+					if(typeof val[0] == 'object'){
+						type.isComplexArray = true;
+					}
+				}
+			}
+		}
+		return type;
+	},
+	
+	copyArray: function(origArray) {
+		var sp = [];
+		for (var i = 0; i < origArray.length; i++) {
+			sp.push(origArray[i]);
+		}
+		return sp;
+	},
+
+    type: 'PayloadProcessor'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:47:17</sys_created_on>
+        <sys_id>94ab0abe2fdb9410a8ce2b5df699b625</sys_id>
+        <sys_mod_count>22</sys_mod_count>
+        <sys_name>PayloadProcessor</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_include_94ab0abe2fdb9410a8ce2b5df699b625</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-08-17 16:26:37</sys_updated_on>
+    </sys_script_include>
+</record_update>

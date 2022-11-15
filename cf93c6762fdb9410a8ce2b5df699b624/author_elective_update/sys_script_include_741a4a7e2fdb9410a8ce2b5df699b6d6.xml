@@ -1,0 +1,1303 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="DELETE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_156954_payload_m.MapProcessor</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>MapProcessor</name>
+        <script><![CDATA[// var MapProcessor = Class.create();
+// MapProcessor.prototype = {
+//     initialize: function() {},
+//     //Start New Map Standardization Logic
+//     standardizeItems: function(mapItems){
+//         var obj = {};
+//         for(var i  = 0; i < mapItems.length; i++){
+//             var tableElement = mapItems[i];
+//             obj[tableElement.className.value] = this.setItemValues(tableElement.values);
+//         }
+
+//         return obj;
+//     },
+
+//     setItemValues: function(values){
+//         var obj = {};
+//         for(var i = 0; i < values.length; i++){
+//             var element = values[i];
+//             obj[element.column.value] = {};
+//             obj[element.column.value].key = element.objectKey.stack;
+//             if(element.column.referenceTable && element.column.referenceField){
+//                 obj[element.column.value].referenceTable = element.column.referenceTable;
+//                 obj[element.column.value].referenceLookup = element.column.referenceField.value;
+//             }
+//         }
+
+//         return obj;
+//     },
+
+//     standardizeRelationships: function(relations){
+//         var relationArray = [];
+// 		if(relations){
+// 			for(var i = 0; i < relations.length; i++){
+// 				var rel = relations[i];
+// 				var relObj = {};
+// 				relObj.parent = rel.parent.value;;
+// 				relObj.child = rel.child.value;
+// 				relObj.type = rel.type.value;
+// 				relObj.referenceField = rel.child.referenceField.value;;
+// 				relationArray.push(relObj);
+// 			}
+// 		}
+//         return relationArray;
+//     },
+
+
+//     //End Array Standardization Logic
+
+
+
+//     //Start Array Standaridzation Logic
+
+//     nestRelationships2: function(standardMap, relationships){
+//         var itemArray = []; 
+//         for(var table in standardMap){
+// 			if(relationships.length > 0){
+// 				var foundRleationships = this.findExistingRelationships(table, relationships);
+// 				if(foundRleationships.parent.length > 0){
+// 					itemArray = this.setParentRelationships(itemArray, foundRleationships.parent, table, standardMap);
+// 				}
+// 			}else{
+// 				//gs.info('yo wft:  ' + JSON.stringify(this.buildNestObj(table, standardMap[table], true)));
+// 				itemArray.push(this.buildNestObj(table, standardMap[table], true));
+// 			}
+            
+//         }
+//        return this.combineItemArray(itemArray, relationships);
+//     },
+
+//     combineItemArray: function(itemArray){
+//         var enteredClasses = {};
+//         var mainArray = [];
+//         for(var i = 0; i < itemArray.length; i++){
+//             var parentTable = itemArray[i];
+//             var parentClassName = parentTable.className;
+// 			var childClassName = '';
+// 			if(parentTable.relations && parentTable.relations.length > 0){
+// 				childClassName = parentTable.relations[0].className;
+// 			}
+            
+//             if(!enteredClasses[parentClassName] && !enteredClasses[childClassName]){
+// 				if(parentTable.relations && parentTable.relations.length > 0){
+// 					 parentTable.relations[0].isPrimary = true;
+// 				}
+//                 mainArray.push(parentTable);
+//                 enteredClasses[parentClassName] = true;
+// 				if(parentTable.relations && parentTable.relations.length > 0){
+// 					enteredClasses[parentTable.relations[0].className] = true;
+// 				}
+//             }else if(enteredClasses[parentClassName] && !enteredClasses[childClassName]){
+//                 mainArray = this.addChildToAllParents(mainArray, parentTable.relations[0], parentClassName, true);
+//                 enteredClasses[childClassName] = true;
+//             }else if(!enteredClasses[parentClassName] && enteredClasses[childClassName]){
+//                 gs.info('no this lul');
+//             }else if(enteredClasses[parentClassName] && enteredClasses[childClassName]){
+//                 mainArray = this.addChildToAllParents(mainArray, parentTable.relations[0], parentClassName, false);
+//             }
+//         }
+//         return mainArray;
+//     },
+
+//     addChildToAllParents: function(mainArray, child, parentClass, primary){
+        
+//         for(var i = 0; i < mainArray.length; i++){
+//             var element = mainArray[i];
+//             if(element.relations.length > 0){
+//                 mainArray[i].relations = this.addChildToAllParents(mainArray[i].relations, child, parentClass);
+//             }
+//             if(element.className === parentClass){
+//                 child.isPrimary = primary;
+//                 mainArray[i].relations.push(child);
+//             }
+//         }
+//         return mainArray;
+//     },
+
+
+//     findFirstParent: function(table, itemArray){
+//         for(var i = 0; i < itemArray.length; i++){
+//             if(itemArray[i].className === table){
+//                 return itemArray[i];
+//             }
+//         }
+//     },
+
+//     setParentRelationships: function(itemArray, parentRelationships, tableName, standardMap){
+        
+//         for(var i = 0; i < parentRelationships.length; i++){
+//             var relationship = parentRelationships[i];
+//             var parentValues = standardMap[relationship.parent];
+//             var childValues = standardMap[relationship.child];
+//             var obj = this.buildNestObj(relationship.parent, parentValues, true);
+//             obj.relations.push(this.buildNestObj(relationship.child, childValues, true, relationship.referenceField));
+//             itemArray.push(obj);
+//         }
+//         return itemArray;
+//     },
+
+//     findExistingRelationships: function(tableName, relationships){
+//         var discoveredRelationships = {
+//             parent: [],
+//             child: []
+//         };
+//         for(var i = 0; i < relationships.length; i++){
+//             var relationship = relationships[i];
+//             if(relationship.parent === tableName){
+//                 discoveredRelationships.parent.push(relationship);
+//             }else if(relationship.child === tableName){
+//                 discoveredRelationships.child.push(relationship);
+//             }
+//         }
+//         return discoveredRelationships;
+//     },
+
+
+
+
+
+
+
+//     standardizeMap: function(keyArray) {
+//         var obj = {};
+//         for (var key in keyArray) {
+//             for (var i = 0; i < keyArray[key].length; i++) {
+//                 var element = keyArray[key][i];
+//                 if (!obj[element.table]) {
+//                     obj[element.table] = {};
+//                 }
+//                 obj[element.table][element.column] = {
+//                     key: key,
+//                 };
+//                 if (element.referenceTable && element.referenceLookup) {
+//                     obj[element.table][element.column].referenceTable = element.referenceTable;
+//                     obj[element.table][element.column].referenceLookup = element.referenceLookup;
+//                 }
+//             }
+//         }
+
+//         return obj;
+//     },
+
+//     nestRelationships: function(standardMap, relationships) {
+//         var returnArray = [];
+//         for (var i = 0; i < relationships.length; i++) {
+//             var rel = relationships[i];
+//             if (standardMap[rel.parent] && standardMap[rel.child]) {
+//                 var pObj = this.buildNestObj(rel.parent, standardMap[rel.parent], true, rel.referenceField);
+//                 pObj.relations.push(this.buildNestObj(rel.child, standardMap[rel.child], true, rel.referenceField));
+//                 returnArray.push(pObj);
+//                 delete standardMap[rel.parent];
+//                 delete standardMap[rel.child];
+//                 //standardMap[rel.parent].used = true;
+//                 //standardMap[rel.child].used = true;
+//             } else if(standardMap[rel.parent] || standardMap[rel.child]) {
+//                 if (standardMap[rel.parent]) {
+//                     var pmObj = this.addParentObj(returnArray, rel.child, rel.parent, standardMap[rel.parent], true, rel.referenceField);
+//                     if (pmObj.added) {
+//                         returnArray = pmObj.array;
+//                     } else {
+//                         returnArray.push(this.buildNestObj(rel.parent, standardMap[rel.parent], true, rel.referenceField));
+//                     }
+//                     delete standardMap[rel.parent];
+//                    // standardMap[rel.parent].used = true;
+//                 } else if (standardMap[rel.child]) {
+//                     var cmObj = this.addChildObj(returnArray, rel.parent, rel.child, standardMap[rel.child], true, rel.referenceField);
+//                     if (cmObj.added) {
+//                         returnArray = cmObj.array;
+//                     } else {
+//                         returnArray.push(this.buildNestObj(rel.child, standardMap[rel.child], true, rel.referenceField));
+//                     }
+//                     delete standardMap[rel.child];
+//                    // standardMap[rel.child].used = true;
+//                 }
+//             }else{
+//                 // relationship exists but primary relationship has been established already
+
+//                 returnArray = this.setNonPrimaryRelationship(returnArray, rel);
+//             }
+//             gs.info('return: ' + JSON.stringify(returnArray));
+//         }
+//         return returnArray;
+//     },
+
+
+//     setNonPrimaryRelationship: function(returnArray, relationship){
+//         for(var i = 0; i < returnArray.length; i++){
+//             var element = returnArray[i];
+//             if(element.className === relationship.parent && element.isPrimary){
+//                 // does child classname exist in related?
+//                 var childExists = this.classNameInArray(element.relations, relationship.child);
+//                 if(!childExists){
+//                     var primary = this.findPrimaryClass(returnArray, relationship.child);
+//                     if(primary){
+//                         returnArray[i].relations.push(this.buildNestObj(primary.className, primary.values, null, relationship.referenceField))
+//                         break;
+//                     }
+                    
+//                 }
+//             }
+//             if(element.relations.length > 0){
+//                 returnArray[i].relations = this.setNonPrimaryRelationship(element.relations, relationship);
+//             }
+//         }
+
+//         return returnArray;
+//     },
+
+//     findPrimaryClass: function(array, className){
+//         for(var i = 0; i < array.length; i++){
+//             var element = array[i];
+//             if(element.className === className && element.isPrimary){
+//                 return element;
+//             }
+//             if(element.relations.length > 0){
+//                 return this.findPrimaryClass(element.relations, className);
+//             }
+//         }
+//     },
+
+//     classNameInArray: function(array, className){
+//         for(var i = 0; i < array.length; i++){
+//             var element = array[i];
+//             if(element.className === className){
+//                 return true;
+//             }
+//         }
+//     },
+
+//     addChildObj: function(returnArray, targetTable, childTable, values, primary, referenceField) {
+//         var added = false;
+//         for (var i = 0; i < returnArray.length; i++) {
+//             var element = returnArray[i];
+//             if (element.isPrimary && element.className === targetTable) {
+//                 returnArray[i].relations.push(this.buildNestObj(childTable, values, primary, referenceField));
+//                 added = true;
+//             } else if (element.relations.length > 0) {
+//                 var modObj = this.addChildObj(element.relations, targetTable, childTable, values, primary, referenceField);
+//                 added = modObj.added;
+//                 returnArray[i].relations = modObj.array;
+//             }
+//         }
+//         return {
+//             array: returnArray,
+//             added: added
+//         };
+//     },
+
+//     addParentObj: function(returnArray, targetTable, parentTable, values, primary, referenceField) {
+//         var added = false;
+//         for (var i = 0; i < returnArray.length; i++) {
+//             var element = returnArray[i];
+//             if (element.className === targetTable) {
+//                 var obj = this.buildNestObj(parentTable, values, primary, referenceField);
+//                 obj.relations.push(element);
+//                 returnArray[i] = obj;
+//                 added = true;
+//             } else if (element.relations.length > 0) {
+//                 var modObj = this.addParentObj(element.relations, targetTable, parentTable, values, primary, referenceField);
+//                 added = modObj.added;
+//                 returnArray[i].relations = modObj.array;
+//             }
+//         }
+//         return {
+//             array: returnArray,
+//             added: added
+//         };
+//     },
+
+//     buildNestObj: function(table, values, isPrimary, referenceField) {
+//         var returnObj = {};
+//         returnObj.className = table;
+//         if(isPrimary){
+//             returnObj.isPrimary = true
+//         }
+//         if(referenceField){
+//             returnObj.referenceField = referenceField;
+//         }
+//         returnObj.values = values;
+//         returnObj.relations = [];
+//         return returnObj;
+//     },
+
+//     // addReferenceItems: function(relationalMap, referenceItems){
+//     //     for(var i = 0; i < relationalMap.length; i++){
+//     //         var element = relationalMap[i];
+//     //         var matchRefItems= this.findMatchingReferenceItems(element.className, referenceItems);
+//     //         if(matchRefItems.length > 0){
+//     //             for(var a = 0; a < matchRefItems.length; a++){
+//     //                 var reference = matchRefItems[a];
+//     //                 if(!relationalMap[i].referenceItems){
+//     //                     relationalMap[i].referenceItems = [];
+//     //                 }
+//     //                 relationalMap[i].referenceItems.push(reference);
+//     //             }
+//     //         } 
+//     //         if(element.relations.length > 0){
+//     //             relationalMap[i].relations = this.addReferenceItems(relationalMap[i].relations, referenceItems);
+//     //         }
+//     //     }
+//     //     return relationalMap;
+//     // },
+
+//     // findMatchingReferenceItems: function(className, referenceItems){
+//     //     var returnArray = [];
+//     //     for(var i = 0; i < referenceItems.length; i++){
+//     //         var element = referenceItems[i];
+//     //         if(element.child === className){
+//     //             returnArray.push(element);
+//     //         }
+//     //     }
+//     //     return returnArray;
+//     // },
+
+//     //End Array Standaridzation Logic
+
+
+//     //Start object map processing logic
+
+//     processObject: function(map, obj, indexTrack, tableIndexTrack) {
+//         if (!indexTrack) {
+//             indexTrack = [];
+//         }
+//         if (!tableIndexTrack) {
+//             tableIndexTrack = {};
+//         }
+//         var returnArray = [];
+//         for (var i = 0; i < map.length; i++) {
+//             var element = map[i];
+//             var valueArray = this.extractValues(element.values, obj, indexTrack);
+//             for (var v = 0; v < valueArray.length; v++) {
+//                 var getGuidObj = this.getGuid(valueArray[v], element.className, tableIndexTrack);
+//                 var guid = getGuidObj.guid;
+//                 tableIndexTrack = getGuidObj.tableIndexTrack;
+//                 var newObj = {};
+//                 newObj.className = element.className;
+//                 newObj.internal_id = guid;
+//                 newObj.referenceField = element.referenceField;
+//                 if(element.isPrimary){
+//                     newObj.isPrimary = element.isPrimary;
+//                 }
+//                 if(element.refereceId){
+//                     newObj.refereceId = element.refereceId;
+//                 }
+//                 newObj.values = valueArray[v].values;
+//                 if (element.relations && element.relations.length > 0) {
+//                     newObj.relations = this.processObject(element.relations, obj, valueArray[v].indexTrack, tableIndexTrack);
+//                 }
+//                 returnArray.push(newObj);
+//             }
+//         }
+//         return returnArray;
+//     },
+
+//     getGuid: function(valueElement, className, tableIndexTrack){
+//         var guid = '';
+//         if(valueElement.indexTrack && valueElement.indexTrack.length > 0){
+//             if(!tableIndexTrack[className]){
+//                 tableIndexTrack[className] = {};
+//             }
+//             if(tableIndexTrack[className][JSON.stringify(valueElement.indexTrack)]){
+//                 guid = tableIndexTrack[className][JSON.stringify(valueElement.indexTrack)];
+//             }else{
+//                 var g = gs.generateGUID();
+//                 tableIndexTrack[className][JSON.stringify(valueElement.indexTrack)] = g;
+//                 guid = g;
+//             }
+//         }else{
+//             guid = gs.generateGUID();
+//         }
+//         return {
+//             guid:  guid,
+//             tableIndexTrack: tableIndexTrack
+//         };
+//     },
+
+//     extractValues: function(values, obj, indexTrack) {
+//         var returnArray = [];
+//         var singleValObj = {};
+//         for (var column in values) {
+//             var v = this.findValue(values[column].key, obj, indexTrack);
+//             if (Array.isArray(v)) {
+//                 for (var i = 0; i < v.length; i++) {
+//                     if (values[column].referenceTable && values[column].referenceLookup) {
+//                         v[i].value = this.lookupReferenceFiled(values[column].referenceTable, values[column].referenceLookup, v[i].value);
+//                     }
+//                     if (!returnArray[i]) {
+//                         returnArray[i] = {
+//                             values: {}
+//                         };
+//                     }
+//                     returnArray[i].values[column] = v[i].value;
+//                     returnArray[i].indexTrack = v[i].indexTrack;
+//                 }
+//             } else {
+//                 if (values[column].referenceTable && values[column].referenceLookup) {
+//                     v = this.lookupReferenceFiled(values[column].referenceTable, values[column].referenceLookup, v);
+//                 }
+//                 singleValObj[column] = v;
+//             }
+//         }
+//         returnArray = this.unifyData(returnArray, singleValObj);
+
+//         return returnArray;
+//     },
+
+//     lookupReferenceFiled: function(table, column, value) {
+//         var gr = new GlideRecord(table);
+//         if (gr.get(column, value)) {
+//             return gr.getUniqueValue();
+//         } else {
+//             return '';
+//         }
+//     },
+
+//     unifyData: function(array, singleObj) {
+//         if (array.length <= 0) {
+//             array[0] = {
+//                 values: {}
+//             };
+//         }
+//         for (var i = 0; i < array.length; i++) {
+//             for (var col in singleObj) {
+//                 array[i].values[col] = singleObj[col];
+//             }
+//         }
+//         return array;
+//     },
+
+//     findValue: function(stack, obj, indexTrack, arrayDepth) {
+//         if (!Array.isArray(stack)) {
+//             stack = stack.split('.');
+//         }
+//         var val = obj;
+//         for (var i = 0; i < stack.length; i++) {
+//             if (this.getType(val) == 'array') {
+//                 var reStack = [];
+//                 for (var t = i; t < stack.length; t++) {
+//                     reStack.push(stack[t]);
+//                 }
+//                 if (!arrayDepth && arrayDepth != 0) {
+//                     arrayDepth = -1;
+//                 }
+//                 arrayDepth++;
+//                 return this.indexArray(val, reStack, indexTrack, arrayDepth);
+//             }
+//             val = val[stack[i]];
+//         }
+//         return val;
+//     },
+	
+// 	indexArray: function(array, stack, indexTrack, arrayDepth) {
+// 		var returnArray = [];
+// 		if (indexTrack[arrayDepth] || indexTrack[arrayDepth] === 0) {
+// 			var val = this.findValue(stack, array[indexTrack[arrayDepth]], indexTrack, arrayDepth);
+// 			if (Array.isArray(val)) {
+// 				returnArray = returnArray.concat(val);
+// 			} else {
+// 				returnArray.push({
+// 					indexTrack: indexTrack,
+// 					value: val
+// 				});
+// 			}
+// 		} else {
+// 			var ogIndexTrack = this.copyArray(indexTrack);
+// 			for (var a = 0; a < array.length; a++) {
+// 				indexTrack = this.copyArray(ogIndexTrack);
+// 				indexTrack.push(a);
+// 				var arrayVal = this.findValue(stack, array[a], indexTrack, arrayDepth);
+// 				if (Array.isArray(arrayVal)) {
+// 					returnArray = returnArray.concat(arrayVal);
+// 				} else {
+// 					returnArray.push({
+// 						indexTrack: indexTrack,
+// 						value: arrayVal
+// 					});
+// 				}
+// 			}
+// 		}
+
+
+// 		return returnArray;
+// 	},
+	
+// 	//End object map processing logic
+	
+// 	//Start IRE format Converstion Logic
+	
+// 	formatArrayForIRE: function(array, returnArray, parentId, mainArray) {
+// 		if (!returnArray) {
+// 			returnArray = {
+// 				items: [],
+//                 relations: [],
+//                 referenceItems: []
+// 			};
+//         }
+//         if(!mainArray){
+//             mainArray = this.copyArray(array);
+//         }
+// 		for (var i = 0; i < array.length; i++) {
+//             var element = array[i];
+//             var childId = element.internal_id;
+//             if(element.isPrimary){
+//                 var obj = this.copyElement(element);
+//                 returnArray.items.push(obj);
+//             }
+// 			if (parentId) {
+// 				returnArray.relations.push({
+// 					parent_id: parentId,
+// 					child_id: childId,
+// 					type: "Contains::Contained by"
+//                 });
+//                 if(element.referenceField){
+//                     returnArray.referenceItems.push({
+//                         referenced: parentId,
+//                         referencedBy: childId,
+//                         referenceField: element.referenceField
+//                     })
+//                 }
+// 			}
+// 			if (element.relations && element.relations.length > 0) {
+// 				returnArray = this.formatArrayForIRE(element.relations, returnArray, obj.internal_id, mainArray);
+// 			}
+// 		}
+// 		return returnArray;
+// 	},
+
+// 	copyElement: function(element) {
+// 		var obj = {};
+// 		obj.className = element.className;
+// 		obj.internal_id = element.internal_id;
+// 		obj.values = element.values;
+// 		return obj;
+//     },
+    
+//     findElementFromId: function(array, internal_id){
+//         var foundElement = '';
+//         for (var i = 0; i < array.length; i++) {
+//             var element = array[i];
+//             if(element.isPrimary){
+//                 if(element.internal_id === internal_id){
+//                     foundElement = element;
+//                     break;
+//                 }
+//                 if(element.relations && element.relations.length > 0){
+//                     foundElement = this.findElementFromId(element.relations, internal_id);
+//                 }   
+//             }
+            
+//         }
+//         return foundElement;
+//     },
+	
+	
+// 	//End IRE format Converstion Logic
+	
+// 	//start helper functions
+	
+// 	copyArray: function(origArray) {
+// 		var sp = [];
+// 		for (var i = 0; i < origArray.length; i++) {
+// 			sp.push(origArray[i]);
+// 		}
+// 		return sp;
+// 	},
+	
+// 	getType: function(val) {
+// 		var type = typeof val;
+// 		if (type === 'object') {
+// 			if (Array.isArray(val)) {
+// 				return 'array';
+// 			}
+// 		}
+// 		return type;
+//     },
+    
+// 	//end helper functions
+//     type: 'MapProcessor'
+// };]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-05-12 12:39:00</sys_created_on>
+        <sys_id>741a4a7e2fdb9410a8ce2b5df699b6d6</sys_id>
+        <sys_mod_count>117</sys_mod_count>
+        <sys_name>MapProcessor</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sys_script_include_741a4a7e2fdb9410a8ce2b5df699b6d6</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-21 14:20:50</sys_updated_on>
+    </sys_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sys_script_include_741a4a7e2fdb9410a8ce2b5df699b6d6</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;x_156954_payload_m.MapProcessor&lt;/api_name&gt;&lt;caller_access/&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description/&gt;&lt;name&gt;MapProcessor&lt;/name&gt;&lt;script&gt;&lt;![CDATA[// var MapProcessor = Class.create();
+// MapProcessor.prototype = {
+//     initialize: function() {},
+//     //Start New Map Standardization Logic
+//     standardizeItems: function(mapItems){
+//         var obj = {};
+//         for(var i  = 0; i &lt; mapItems.length; i++){
+//             var tableElement = mapItems[i];
+//             obj[tableElement.className.value] = this.setItemValues(tableElement.values);
+//         }
+
+//         return obj;
+//     },
+
+//     setItemValues: function(values){
+//         var obj = {};
+//         for(var i = 0; i &lt; values.length; i++){
+//             var element = values[i];
+//             obj[element.column.value] = {};
+//             obj[element.column.value].key = element.objectKey.stack;
+//             if(element.column.referenceTable &amp;&amp; element.column.referenceField){
+//                 obj[element.column.value].referenceTable = element.column.referenceTable;
+//                 obj[element.column.value].referenceLookup = element.column.referenceField.value;
+//             }
+//         }
+
+//         return obj;
+//     },
+
+//     standardizeRelationships: function(relations){
+//         var relationArray = [];
+// 		if(relations){
+// 			for(var i = 0; i &lt; relations.length; i++){
+// 				var rel = relations[i];
+// 				var relObj = {};
+// 				relObj.parent = rel.parent.value;;
+// 				relObj.child = rel.child.value;
+// 				relObj.type = rel.type.value;
+// 				relObj.referenceField = rel.child.referenceField.value;;
+// 				relationArray.push(relObj);
+// 			}
+// 		}
+//         return relationArray;
+//     },
+
+
+//     //End Array Standardization Logic
+
+
+
+//     //Start Array Standaridzation Logic
+
+//     nestRelationships2: function(standardMap, relationships){
+//         var itemArray = []; 
+//         for(var table in standardMap){
+// 			if(relationships.length &gt; 0){
+// 				var foundRleationships = this.findExistingRelationships(table, relationships);
+// 				if(foundRleationships.parent.length &gt; 0){
+// 					itemArray = this.setParentRelationships(itemArray, foundRleationships.parent, table, standardMap);
+// 				}
+// 			}else{
+// 				//gs.info('yo wft:  ' + JSON.stringify(this.buildNestObj(table, standardMap[table], true)));
+// 				itemArray.push(this.buildNestObj(table, standardMap[table], true));
+// 			}
+            
+//         }
+//        return this.combineItemArray(itemArray, relationships);
+//     },
+
+//     combineItemArray: function(itemArray){
+//         var enteredClasses = {};
+//         var mainArray = [];
+//         for(var i = 0; i &lt; itemArray.length; i++){
+//             var parentTable = itemArray[i];
+//             var parentClassName = parentTable.className;
+// 			var childClassName = '';
+// 			if(parentTable.relations &amp;&amp; parentTable.relations.length &gt; 0){
+// 				childClassName = parentTable.relations[0].className;
+// 			}
+            
+//             if(!enteredClasses[parentClassName] &amp;&amp; !enteredClasses[childClassName]){
+// 				if(parentTable.relations &amp;&amp; parentTable.relations.length &gt; 0){
+// 					 parentTable.relations[0].isPrimary = true;
+// 				}
+//                 mainArray.push(parentTable);
+//                 enteredClasses[parentClassName] = true;
+// 				if(parentTable.relations &amp;&amp; parentTable.relations.length &gt; 0){
+// 					enteredClasses[parentTable.relations[0].className] = true;
+// 				}
+//             }else if(enteredClasses[parentClassName] &amp;&amp; !enteredClasses[childClassName]){
+//                 mainArray = this.addChildToAllParents(mainArray, parentTable.relations[0], parentClassName, true);
+//                 enteredClasses[childClassName] = true;
+//             }else if(!enteredClasses[parentClassName] &amp;&amp; enteredClasses[childClassName]){
+//                 gs.info('no this lul');
+//             }else if(enteredClasses[parentClassName] &amp;&amp; enteredClasses[childClassName]){
+//                 mainArray = this.addChildToAllParents(mainArray, parentTable.relations[0], parentClassName, false);
+//             }
+//         }
+//         return mainArray;
+//     },
+
+//     addChildToAllParents: function(mainArray, child, parentClass, primary){
+        
+//         for(var i = 0; i &lt; mainArray.length; i++){
+//             var element = mainArray[i];
+//             if(element.relations.length &gt; 0){
+//                 mainArray[i].relations = this.addChildToAllParents(mainArray[i].relations, child, parentClass);
+//             }
+//             if(element.className === parentClass){
+//                 child.isPrimary = primary;
+//                 mainArray[i].relations.push(child);
+//             }
+//         }
+//         return mainArray;
+//     },
+
+
+//     findFirstParent: function(table, itemArray){
+//         for(var i = 0; i &lt; itemArray.length; i++){
+//             if(itemArray[i].className === table){
+//                 return itemArray[i];
+//             }
+//         }
+//     },
+
+//     setParentRelationships: function(itemArray, parentRelationships, tableName, standardMap){
+        
+//         for(var i = 0; i &lt; parentRelationships.length; i++){
+//             var relationship = parentRelationships[i];
+//             var parentValues = standardMap[relationship.parent];
+//             var childValues = standardMap[relationship.child];
+//             var obj = this.buildNestObj(relationship.parent, parentValues, true);
+//             obj.relations.push(this.buildNestObj(relationship.child, childValues, true, relationship.referenceField));
+//             itemArray.push(obj);
+//         }
+//         return itemArray;
+//     },
+
+//     findExistingRelationships: function(tableName, relationships){
+//         var discoveredRelationships = {
+//             parent: [],
+//             child: []
+//         };
+//         for(var i = 0; i &lt; relationships.length; i++){
+//             var relationship = relationships[i];
+//             if(relationship.parent === tableName){
+//                 discoveredRelationships.parent.push(relationship);
+//             }else if(relationship.child === tableName){
+//                 discoveredRelationships.child.push(relationship);
+//             }
+//         }
+//         return discoveredRelationships;
+//     },
+
+
+
+
+
+
+
+//     standardizeMap: function(keyArray) {
+//         var obj = {};
+//         for (var key in keyArray) {
+//             for (var i = 0; i &lt; keyArray[key].length; i++) {
+//                 var element = keyArray[key][i];
+//                 if (!obj[element.table]) {
+//                     obj[element.table] = {};
+//                 }
+//                 obj[element.table][element.column] = {
+//                     key: key,
+//                 };
+//                 if (element.referenceTable &amp;&amp; element.referenceLookup) {
+//                     obj[element.table][element.column].referenceTable = element.referenceTable;
+//                     obj[element.table][element.column].referenceLookup = element.referenceLookup;
+//                 }
+//             }
+//         }
+
+//         return obj;
+//     },
+
+//     nestRelationships: function(standardMap, relationships) {
+//         var returnArray = [];
+//         for (var i = 0; i &lt; relationships.length; i++) {
+//             var rel = relationships[i];
+//             if (standardMap[rel.parent] &amp;&amp; standardMap[rel.child]) {
+//                 var pObj = this.buildNestObj(rel.parent, standardMap[rel.parent], true, rel.referenceField);
+//                 pObj.relations.push(this.buildNestObj(rel.child, standardMap[rel.child], true, rel.referenceField));
+//                 returnArray.push(pObj);
+//                 delete standardMap[rel.parent];
+//                 delete standardMap[rel.child];
+//                 //standardMap[rel.parent].used = true;
+//                 //standardMap[rel.child].used = true;
+//             } else if(standardMap[rel.parent] || standardMap[rel.child]) {
+//                 if (standardMap[rel.parent]) {
+//                     var pmObj = this.addParentObj(returnArray, rel.child, rel.parent, standardMap[rel.parent], true, rel.referenceField);
+//                     if (pmObj.added) {
+//                         returnArray = pmObj.array;
+//                     } else {
+//                         returnArray.push(this.buildNestObj(rel.parent, standardMap[rel.parent], true, rel.referenceField));
+//                     }
+//                     delete standardMap[rel.parent];
+//                    // standardMap[rel.parent].used = true;
+//                 } else if (standardMap[rel.child]) {
+//                     var cmObj = this.addChildObj(returnArray, rel.parent, rel.child, standardMap[rel.child], true, rel.referenceField);
+//                     if (cmObj.added) {
+//                         returnArray = cmObj.array;
+//                     } else {
+//                         returnArray.push(this.buildNestObj(rel.child, standardMap[rel.child], true, rel.referenceField));
+//                     }
+//                     delete standardMap[rel.child];
+//                    // standardMap[rel.child].used = true;
+//                 }
+//             }else{
+//                 // relationship exists but primary relationship has been established already
+
+//                 returnArray = this.setNonPrimaryRelationship(returnArray, rel);
+//             }
+//             gs.info('return: ' + JSON.stringify(returnArray));
+//         }
+//         return returnArray;
+//     },
+
+
+//     setNonPrimaryRelationship: function(returnArray, relationship){
+//         for(var i = 0; i &lt; returnArray.length; i++){
+//             var element = returnArray[i];
+//             if(element.className === relationship.parent &amp;&amp; element.isPrimary){
+//                 // does child classname exist in related?
+//                 var childExists = this.classNameInArray(element.relations, relationship.child);
+//                 if(!childExists){
+//                     var primary = this.findPrimaryClass(returnArray, relationship.child);
+//                     if(primary){
+//                         returnArray[i].relations.push(this.buildNestObj(primary.className, primary.values, null, relationship.referenceField))
+//                         break;
+//                     }
+                    
+//                 }
+//             }
+//             if(element.relations.length &gt; 0){
+//                 returnArray[i].relations = this.setNonPrimaryRelationship(element.relations, relationship);
+//             }
+//         }
+
+//         return returnArray;
+//     },
+
+//     findPrimaryClass: function(array, className){
+//         for(var i = 0; i &lt; array.length; i++){
+//             var element = array[i];
+//             if(element.className === className &amp;&amp; element.isPrimary){
+//                 return element;
+//             }
+//             if(element.relations.length &gt; 0){
+//                 return this.findPrimaryClass(element.relations, className);
+//             }
+//         }
+//     },
+
+//     classNameInArray: function(array, className){
+//         for(var i = 0; i &lt; array.length; i++){
+//             var element = array[i];
+//             if(element.className === className){
+//                 return true;
+//             }
+//         }
+//     },
+
+//     addChildObj: function(returnArray, targetTable, childTable, values, primary, referenceField) {
+//         var added = false;
+//         for (var i = 0; i &lt; returnArray.length; i++) {
+//             var element = returnArray[i];
+//             if (element.isPrimary &amp;&amp; element.className === targetTable) {
+//                 returnArray[i].relations.push(this.buildNestObj(childTable, values, primary, referenceField));
+//                 added = true;
+//             } else if (element.relations.length &gt; 0) {
+//                 var modObj = this.addChildObj(element.relations, targetTable, childTable, values, primary, referenceField);
+//                 added = modObj.added;
+//                 returnArray[i].relations = modObj.array;
+//             }
+//         }
+//         return {
+//             array: returnArray,
+//             added: added
+//         };
+//     },
+
+//     addParentObj: function(returnArray, targetTable, parentTable, values, primary, referenceField) {
+//         var added = false;
+//         for (var i = 0; i &lt; returnArray.length; i++) {
+//             var element = returnArray[i];
+//             if (element.className === targetTable) {
+//                 var obj = this.buildNestObj(parentTable, values, primary, referenceField);
+//                 obj.relations.push(element);
+//                 returnArray[i] = obj;
+//                 added = true;
+//             } else if (element.relations.length &gt; 0) {
+//                 var modObj = this.addParentObj(element.relations, targetTable, parentTable, values, primary, referenceField);
+//                 added = modObj.added;
+//                 returnArray[i].relations = modObj.array;
+//             }
+//         }
+//         return {
+//             array: returnArray,
+//             added: added
+//         };
+//     },
+
+//     buildNestObj: function(table, values, isPrimary, referenceField) {
+//         var returnObj = {};
+//         returnObj.className = table;
+//         if(isPrimary){
+//             returnObj.isPrimary = true
+//         }
+//         if(referenceField){
+//             returnObj.referenceField = referenceField;
+//         }
+//         returnObj.values = values;
+//         returnObj.relations = [];
+//         return returnObj;
+//     },
+
+//     // addReferenceItems: function(relationalMap, referenceItems){
+//     //     for(var i = 0; i &lt; relationalMap.length; i++){
+//     //         var element = relationalMap[i];
+//     //         var matchRefItems= this.findMatchingReferenceItems(element.className, referenceItems);
+//     //         if(matchRefItems.length &gt; 0){
+//     //             for(var a = 0; a &lt; matchRefItems.length; a++){
+//     //                 var reference = matchRefItems[a];
+//     //                 if(!relationalMap[i].referenceItems){
+//     //                     relationalMap[i].referenceItems = [];
+//     //                 }
+//     //                 relationalMap[i].referenceItems.push(reference);
+//     //             }
+//     //         } 
+//     //         if(element.relations.length &gt; 0){
+//     //             relationalMap[i].relations = this.addReferenceItems(relationalMap[i].relations, referenceItems);
+//     //         }
+//     //     }
+//     //     return relationalMap;
+//     // },
+
+//     // findMatchingReferenceItems: function(className, referenceItems){
+//     //     var returnArray = [];
+//     //     for(var i = 0; i &lt; referenceItems.length; i++){
+//     //         var element = referenceItems[i];
+//     //         if(element.child === className){
+//     //             returnArray.push(element);
+//     //         }
+//     //     }
+//     //     return returnArray;
+//     // },
+
+//     //End Array Standaridzation Logic
+
+
+//     //Start object map processing logic
+
+//     processObject: function(map, obj, indexTrack, tableIndexTrack) {
+//         if (!indexTrack) {
+//             indexTrack = [];
+//         }
+//         if (!tableIndexTrack) {
+//             tableIndexTrack = {};
+//         }
+//         var returnArray = [];
+//         for (var i = 0; i &lt; map.length; i++) {
+//             var element = map[i];
+//             var valueArray = this.extractValues(element.values, obj, indexTrack);
+//             for (var v = 0; v &lt; valueArray.length; v++) {
+//                 var getGuidObj = this.getGuid(valueArray[v], element.className, tableIndexTrack);
+//                 var guid = getGuidObj.guid;
+//                 tableIndexTrack = getGuidObj.tableIndexTrack;
+//                 var newObj = {};
+//                 newObj.className = element.className;
+//                 newObj.internal_id = guid;
+//                 newObj.referenceField = element.referenceField;
+//                 if(element.isPrimary){
+//                     newObj.isPrimary = element.isPrimary;
+//                 }
+//                 if(element.refereceId){
+//                     newObj.refereceId = element.refereceId;
+//                 }
+//                 newObj.values = valueArray[v].values;
+//                 if (element.relations &amp;&amp; element.relations.length &gt; 0) {
+//                     newObj.relations = this.processObject(element.relations, obj, valueArray[v].indexTrack, tableIndexTrack);
+//                 }
+//                 returnArray.push(newObj);
+//             }
+//         }
+//         return returnArray;
+//     },
+
+//     getGuid: function(valueElement, className, tableIndexTrack){
+//         var guid = '';
+//         if(valueElement.indexTrack &amp;&amp; valueElement.indexTrack.length &gt; 0){
+//             if(!tableIndexTrack[className]){
+//                 tableIndexTrack[className] = {};
+//             }
+//             if(tableIndexTrack[className][JSON.stringify(valueElement.indexTrack)]){
+//                 guid = tableIndexTrack[className][JSON.stringify(valueElement.indexTrack)];
+//             }else{
+//                 var g = gs.generateGUID();
+//                 tableIndexTrack[className][JSON.stringify(valueElement.indexTrack)] = g;
+//                 guid = g;
+//             }
+//         }else{
+//             guid = gs.generateGUID();
+//         }
+//         return {
+//             guid:  guid,
+//             tableIndexTrack: tableIndexTrack
+//         };
+//     },
+
+//     extractValues: function(values, obj, indexTrack) {
+//         var returnArray = [];
+//         var singleValObj = {};
+//         for (var column in values) {
+//             var v = this.findValue(values[column].key, obj, indexTrack);
+//             if (Array.isArray(v)) {
+//                 for (var i = 0; i &lt; v.length; i++) {
+//                     if (values[column].referenceTable &amp;&amp; values[column].referenceLookup) {
+//                         v[i].value = this.lookupReferenceFiled(values[column].referenceTable, values[column].referenceLookup, v[i].value);
+//                     }
+//                     if (!returnArray[i]) {
+//                         returnArray[i] = {
+//                             values: {}
+//                         };
+//                     }
+//                     returnArray[i].values[column] = v[i].value;
+//                     returnArray[i].indexTrack = v[i].indexTrack;
+//                 }
+//             } else {
+//                 if (values[column].referenceTable &amp;&amp; values[column].referenceLookup) {
+//                     v = this.lookupReferenceFiled(values[column].referenceTable, values[column].referenceLookup, v);
+//                 }
+//                 singleValObj[column] = v;
+//             }
+//         }
+//         returnArray = this.unifyData(returnArray, singleValObj);
+
+//         return returnArray;
+//     },
+
+//     lookupReferenceFiled: function(table, column, value) {
+//         var gr = new GlideRecord(table);
+//         if (gr.get(column, value)) {
+//             return gr.getUniqueValue();
+//         } else {
+//             return '';
+//         }
+//     },
+
+//     unifyData: function(array, singleObj) {
+//         if (array.length &lt;= 0) {
+//             array[0] = {
+//                 values: {}
+//             };
+//         }
+//         for (var i = 0; i &lt; array.length; i++) {
+//             for (var col in singleObj) {
+//                 array[i].values[col] = singleObj[col];
+//             }
+//         }
+//         return array;
+//     },
+
+//     findValue: function(stack, obj, indexTrack, arrayDepth) {
+//         if (!Array.isArray(stack)) {
+//             stack = stack.split('.');
+//         }
+//         var val = obj;
+//         for (var i = 0; i &lt; stack.length; i++) {
+//             if (this.getType(val) == 'array') {
+//                 var reStack = [];
+//                 for (var t = i; t &lt; stack.length; t++) {
+//                     reStack.push(stack[t]);
+//                 }
+//                 if (!arrayDepth &amp;&amp; arrayDepth != 0) {
+//                     arrayDepth = -1;
+//                 }
+//                 arrayDepth++;
+//                 return this.indexArray(val, reStack, indexTrack, arrayDepth);
+//             }
+//             val = val[stack[i]];
+//         }
+//         return val;
+//     },
+	
+// 	indexArray: function(array, stack, indexTrack, arrayDepth) {
+// 		var returnArray = [];
+// 		if (indexTrack[arrayDepth] || indexTrack[arrayDepth] === 0) {
+// 			var val = this.findValue(stack, array[indexTrack[arrayDepth]], indexTrack, arrayDepth);
+// 			if (Array.isArray(val)) {
+// 				returnArray = returnArray.concat(val);
+// 			} else {
+// 				returnArray.push({
+// 					indexTrack: indexTrack,
+// 					value: val
+// 				});
+// 			}
+// 		} else {
+// 			var ogIndexTrack = this.copyArray(indexTrack);
+// 			for (var a = 0; a &lt; array.length; a++) {
+// 				indexTrack = this.copyArray(ogIndexTrack);
+// 				indexTrack.push(a);
+// 				var arrayVal = this.findValue(stack, array[a], indexTrack, arrayDepth);
+// 				if (Array.isArray(arrayVal)) {
+// 					returnArray = returnArray.concat(arrayVal);
+// 				} else {
+// 					returnArray.push({
+// 						indexTrack: indexTrack,
+// 						value: arrayVal
+// 					});
+// 				}
+// 			}
+// 		}
+
+
+// 		return returnArray;
+// 	},
+	
+// 	//End object map processing logic
+	
+// 	//Start IRE format Converstion Logic
+	
+// 	formatArrayForIRE: function(array, returnArray, parentId, mainArray) {
+// 		if (!returnArray) {
+// 			returnArray = {
+// 				items: [],
+//                 relations: [],
+//                 referenceItems: []
+// 			};
+//         }
+//         if(!mainArray){
+//             mainArray = this.copyArray(array);
+//         }
+// 		for (var i = 0; i &lt; array.length; i++) {
+//             var element = array[i];
+//             var childId = element.internal_id;
+//             if(element.isPrimary){
+//                 var obj = this.copyElement(element);
+//                 returnArray.items.push(obj);
+//             }
+// 			if (parentId) {
+// 				returnArray.relations.push({
+// 					parent_id: parentId,
+// 					child_id: childId,
+// 					type: "Contains::Contained by"
+//                 });
+//                 if(element.referenceField){
+//                     returnArray.referenceItems.push({
+//                         referenced: parentId,
+//                         referencedBy: childId,
+//                         referenceField: element.referenceField
+//                     })
+//                 }
+// 			}
+// 			if (element.relations &amp;&amp; element.relations.length &gt; 0) {
+// 				returnArray = this.formatArrayForIRE(element.relations, returnArray, obj.internal_id, mainArray);
+// 			}
+// 		}
+// 		return returnArray;
+// 	},
+
+// 	copyElement: function(element) {
+// 		var obj = {};
+// 		obj.className = element.className;
+// 		obj.internal_id = element.internal_id;
+// 		obj.values = element.values;
+// 		return obj;
+//     },
+    
+//     findElementFromId: function(array, internal_id){
+//         var foundElement = '';
+//         for (var i = 0; i &lt; array.length; i++) {
+//             var element = array[i];
+//             if(element.isPrimary){
+//                 if(element.internal_id === internal_id){
+//                     foundElement = element;
+//                     break;
+//                 }
+//                 if(element.relations &amp;&amp; element.relations.length &gt; 0){
+//                     foundElement = this.findElementFromId(element.relations, internal_id);
+//                 }   
+//             }
+            
+//         }
+//         return foundElement;
+//     },
+	
+	
+// 	//End IRE format Converstion Logic
+	
+// 	//start helper functions
+	
+// 	copyArray: function(origArray) {
+// 		var sp = [];
+// 		for (var i = 0; i &lt; origArray.length; i++) {
+// 			sp.push(origArray[i]);
+// 		}
+// 		return sp;
+// 	},
+	
+// 	getType: function(val) {
+// 		var type = typeof val;
+// 		if (type === 'object') {
+// 			if (Array.isArray(val)) {
+// 				return 'array';
+// 			}
+// 		}
+// 		return type;
+//     },
+    
+// 	//end helper functions
+//     type: 'MapProcessor'
+// };]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;erik.anderson&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2020-05-12 12:39:00&lt;/sys_created_on&gt;&lt;sys_id&gt;741a4a7e2fdb9410a8ce2b5df699b6d6&lt;/sys_id&gt;&lt;sys_mod_count&gt;117&lt;/sys_mod_count&gt;&lt;sys_name&gt;MapProcessor&lt;/sys_name&gt;&lt;sys_package display_value="Payload Mapper" source="x_156954_payload_m"&gt;cf93c6762fdb9410a8ce2b5df699b624&lt;/sys_package&gt;&lt;sys_policy&gt;read&lt;/sys_policy&gt;&lt;sys_scope display_value="Payload Mapper"&gt;cf93c6762fdb9410a8ce2b5df699b624&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_741a4a7e2fdb9410a8ce2b5df699b6d6&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;erik.anderson&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2020-09-21 14:20:50&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>415880455</payload_hash>
+        <record_name>MapProcessor</record_name>
+        <reverted_from/>
+        <source>4b930ab62fdb9410a8ce2b5df699b666</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-21 14:20:50</sys_created_on>
+        <sys_id>109aca832f5bd410a8ce2b5df699b659</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>174b109e9250000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-21 14:20:50</sys_updated_on>
+        <type>Script Include</type>
+        <update_guid>189aca83eb5bd410444ee90933a59958</update_guid>
+        <update_guid_history>189aca83eb5bd410444ee90933a59958:415880455,033a4e7eebdb9410923a75cc2979ffbc:156022803</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-21 17:18:02</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_include">sys_script_include</sys_db_object>
+        <sys_id>37fb576b815744c096b2cef84ce07a40</sys_id>
+        <sys_metadata>741a4a7e2fdb9410a8ce2b5df699b6d6</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>MapProcessor</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sys_script_include_741a4a7e2fdb9410a8ce2b5df699b6d6</sys_update_name>
+        <sys_update_version display_value="sys_script_include_741a4a7e2fdb9410a8ce2b5df699b6d6">109aca832f5bd410a8ce2b5df699b659</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-21 17:18:02</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

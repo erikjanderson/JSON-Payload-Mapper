@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column">
+    <sp_column action="DELETE">
+        <class_name/>
+        <order>1</order>
+        <size/>
+        <size_lg/>
+        <size_sm/>
+        <size_xs/>
+        <sp_row display_value="1">0ba3c2b62fdb9410a8ce2b5df699b6b3</sp_row>
+        <sys_class_name>sp_column</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-05-14 13:53:19</sys_created_on>
+        <sys_id>c3a3c2b62fdb9410a8ce2b5df699b6b3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sp_column_c3a3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-05-14 13:53:19</sys_updated_on>
+    </sp_column>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sp_column_c3a3c2b62fdb9410a8ce2b5df699b6b3</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column"><sp_column action="INSERT_OR_UPDATE"><class_name/><order>1</order><size/><size_lg/><size_sm/><size_xs/><sp_row display_value="1">0ba3c2b62fdb9410a8ce2b5df699b6b3</sp_row><sys_class_name>sp_column</sys_class_name><sys_created_by>erik.anderson</sys_created_by><sys_created_on>2020-05-14 13:53:19</sys_created_on><sys_id>c3a3c2b62fdb9410a8ce2b5df699b6b3</sys_id><sys_mod_count>0</sys_mod_count><sys_name>1</sys_name><sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package><sys_policy/><sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope><sys_update_name>sp_column_c3a3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name><sys_updated_by>erik.anderson</sys_updated_by><sys_updated_on>2020-05-14 13:53:19</sys_updated_on></sp_column></record_update>]]></payload>
+        <payload_hash>279699451</payload_hash>
+        <record_name>1</record_name>
+        <reverted_from/>
+        <source>51e34eb62fdb9410a8ce2b5df699b625</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:13:13</sys_created_on>
+        <sys_id>95e34eb62fdb9410a8ce2b5df699b6b3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>174acef3bd60000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:13:13</sys_updated_on>
+        <type>Column</type>
+        <update_guid>55e34eb6c6db9410d6e2ea10670880b3</update_guid>
+        <update_guid_history>55e34eb6c6db9410d6e2ea10670880b3:279699451</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">8a38cafa2fdb9410a8ce2b5df699b67e</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:32:06</sys_created_on>
+        <sys_db_object display_value="" name="sp_column">sp_column</sys_db_object>
+        <sys_id>33c1d67f5d1d40e093072e7edcee4900</sys_id>
+        <sys_metadata>c3a3c2b62fdb9410a8ce2b5df699b6b3</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sp_column_c3a3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name>
+        <sys_update_version display_value="sp_column_c3a3c2b62fdb9410a8ce2b5df699b6b3">95e34eb62fdb9410a8ce2b5df699b6b3</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:32:06</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

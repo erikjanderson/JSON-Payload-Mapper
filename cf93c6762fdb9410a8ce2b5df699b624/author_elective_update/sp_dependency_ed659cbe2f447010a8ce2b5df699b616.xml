@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_dependency">
+    <sp_dependency action="DELETE">
+        <module/>
+        <name>widgetMacros</name>
+        <page_load>false</page_load>
+        <sp_portals/>
+        <sys_class_name>sp_dependency</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:08:53</sys_created_on>
+        <sys_id>ed659cbe2f447010a8ce2b5df699b616</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>widgetMacros</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sp_dependency_ed659cbe2f447010a8ce2b5df699b616</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:08:53</sys_updated_on>
+    </sp_dependency>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sp_dependency_ed659cbe2f447010a8ce2b5df699b616</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_dependency"><sp_dependency action="INSERT_OR_UPDATE"><module/><name>widgetMacros</name><page_load>false</page_load><sp_portals/><sys_class_name>sp_dependency</sys_class_name><sys_created_by>erik.anderson</sys_created_by><sys_created_on>2021-05-14 14:08:53</sys_created_on><sys_id>ed659cbe2f447010a8ce2b5df699b616</sys_id><sys_mod_count>0</sys_mod_count><sys_name>widgetMacros</sys_name><sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package><sys_policy/><sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope><sys_update_name>sp_dependency_ed659cbe2f447010a8ce2b5df699b616</sys_update_name><sys_updated_by>erik.anderson</sys_updated_by><sys_updated_on>2021-05-14 14:08:53</sys_updated_on></sp_dependency></record_update>]]></payload>
+        <payload_hash>99079771</payload_hash>
+        <record_name>widgetMacros</record_name>
+        <reverted_from/>
+        <source>15aa67072f371010a8ce2b5df699b6df</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:08:53</sys_created_on>
+        <sys_id>d07594be2f447010a8ce2b5df699b655</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1796b3569d50000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:08:53</sys_updated_on>
+        <type>Widget Dependency</type>
+        <update_guid>d87594be23447010b5381b4fb31fa454</update_guid>
+        <update_guid_history>d87594be23447010b5381b4fb31fa454:99079771</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">94a890b22f847010a8ce2b5df699b69e</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:22:49</sys_created_on>
+        <sys_db_object display_value="" name="sp_dependency">sp_dependency</sys_db_object>
+        <sys_id>3dd27f4863a746bf858541de06656a61</sys_id>
+        <sys_metadata>ed659cbe2f447010a8ce2b5df699b616</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>widgetMacros</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sp_dependency_ed659cbe2f447010a8ce2b5df699b616</sys_update_name>
+        <sys_update_version display_value="sp_dependency_ed659cbe2f447010a8ce2b5df699b616">d07594be2f447010a8ce2b5df699b655</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:22:49</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

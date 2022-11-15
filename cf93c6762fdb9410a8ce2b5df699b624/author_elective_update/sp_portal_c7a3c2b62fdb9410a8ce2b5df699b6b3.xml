@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_portal">
+    <sp_portal action="DELETE">
+        <css_variables/>
+        <default>false</default>
+        <hide_portal_name>false</hide_portal_name>
+        <homepage/>
+        <icon/>
+        <kb_knowledge_base/>
+        <kb_knowledge_page/>
+        <login_page/>
+        <logo/>
+        <notfound_page/>
+        <quick_start_config/>
+        <sc_catalog/>
+        <sc_catalog_page/>
+        <sc_category_page/>
+        <sp_chat_queue/>
+        <sp_rectangle_menu/>
+        <sqanda_knowledge_base/>
+        <sys_class_name>sp_portal</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-05-14 13:38:55</sys_created_on>
+        <sys_id>c7a3c2b62fdb9410a8ce2b5df699b6b3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IRE Extention</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>sp_portal_c7a3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-05-14 13:38:55</sys_updated_on>
+        <theme/>
+        <title>IRE Extention</title>
+        <ts_index_group/>
+        <url_suffix>x_156954_payload_m</url_suffix>
+    </sp_portal>
+    <sys_translated_text action="DELETE" query="documentkey=c7a3c2b62fdb9410a8ce2b5df699b6b3"/>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>sp_portal_c7a3c2b62fdb9410a8ce2b5df699b6b3</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_portal"><sp_portal action="INSERT_OR_UPDATE"><css_variables/><default>false</default><hide_portal_name>false</hide_portal_name><homepage/><icon/><kb_knowledge_base/><kb_knowledge_page/><login_page/><logo/><notfound_page/><quick_start_config/><sc_catalog/><sc_catalog_page/><sc_category_page/><sp_chat_queue/><sp_rectangle_menu/><sqanda_knowledge_base/><sys_class_name>sp_portal</sys_class_name><sys_created_by>erik.anderson</sys_created_by><sys_created_on>2020-05-14 13:38:55</sys_created_on><sys_id>c7a3c2b62fdb9410a8ce2b5df699b6b3</sys_id><sys_mod_count>0</sys_mod_count><sys_name>IRE Extention</sys_name><sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package><sys_policy/><sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope><sys_update_name>sp_portal_c7a3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name><sys_updated_by>erik.anderson</sys_updated_by><sys_updated_on>2020-05-14 13:38:55</sys_updated_on><theme/><title>IRE Extention</title><ts_index_group/><url_suffix>x_156954_payload_m</url_suffix></sp_portal><sys_translated_text action="delete_multiple" query="documentkey=c7a3c2b62fdb9410a8ce2b5df699b6b3"/></record_update>]]></payload>
+        <payload_hash>-118871968</payload_hash>
+        <record_name>IRE Extention</record_name>
+        <reverted_from/>
+        <source>51e34eb62fdb9410a8ce2b5df699b625</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:13:16</sys_created_on>
+        <sys_id>0ae34eb62fdb9410a8ce2b5df699b6fe</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>174acef47850000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:13:16</sys_updated_on>
+        <type>Service Portal</type>
+        <update_guid>c6e34eb67adb94100a348f40fd2df2fe</update_guid>
+        <update_guid_history>c6e34eb67adb94100a348f40fd2df2fe:-118871968</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">a238cafa2fdb9410a8ce2b5df699b6f0</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2020-09-20 19:32:08</sys_created_on>
+        <sys_db_object display_value="" name="sp_portal">sp_portal</sys_db_object>
+        <sys_id>73a4a7062aad4562adddbfbe77c2edc1</sys_id>
+        <sys_metadata>c7a3c2b62fdb9410a8ce2b5df699b6b3</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IRE Extention</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>sp_portal_c7a3c2b62fdb9410a8ce2b5df699b6b3</sys_update_name>
+        <sys_update_version display_value="sp_portal_c7a3c2b62fdb9410a8ce2b5df699b6b3">0ae34eb62fdb9410a8ce2b5df699b6fe</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2020-09-20 19:32:08</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

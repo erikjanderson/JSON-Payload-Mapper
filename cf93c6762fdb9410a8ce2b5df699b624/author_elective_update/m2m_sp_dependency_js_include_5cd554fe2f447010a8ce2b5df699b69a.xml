@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_dependency_js_include">
+    <m2m_sp_dependency_js_include action="DELETE">
+        <order>100</order>
+        <sp_dependency display_value="widgetMacros">ed659cbe2f447010a8ce2b5df699b616</sp_dependency>
+        <sp_js_include display_value="widgetMacros">1a75dcbe2f447010a8ce2b5df699b694</sp_js_include>
+        <sys_class_name>m2m_sp_dependency_js_include</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:10:32</sys_created_on>
+        <sys_id>5cd554fe2f447010a8ce2b5df699b69a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>widgetMacros.widgetMacros</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_update_name>m2m_sp_dependency_js_include_5cd554fe2f447010a8ce2b5df699b69a</sys_update_name>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:10:32</sys_updated_on>
+    </m2m_sp_dependency_js_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</application>
+        <file_path/>
+        <instance_id>54f0e1b4db429bc0536ad5b0cf9619dd</instance_id>
+        <instance_name>dev58956</instance_name>
+        <name>m2m_sp_dependency_js_include_5cd554fe2f447010a8ce2b5df699b69a</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_dependency_js_include"><m2m_sp_dependency_js_include action="INSERT_OR_UPDATE"><order>100</order><sp_dependency display_value="widgetMacros">ed659cbe2f447010a8ce2b5df699b616</sp_dependency><sp_js_include display_value="widgetMacros">1a75dcbe2f447010a8ce2b5df699b694</sp_js_include><sys_class_name>m2m_sp_dependency_js_include</sys_class_name><sys_created_by>erik.anderson</sys_created_by><sys_created_on>2021-05-14 14:10:32</sys_created_on><sys_id>5cd554fe2f447010a8ce2b5df699b69a</sys_id><sys_mod_count>0</sys_mod_count><sys_name>widgetMacros.widgetMacros</sys_name><sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package><sys_policy/><sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope><sys_update_name>m2m_sp_dependency_js_include_5cd554fe2f447010a8ce2b5df699b69a</sys_update_name><sys_updated_by>erik.anderson</sys_updated_by><sys_updated_on>2021-05-14 14:10:32</sys_updated_on></m2m_sp_dependency_js_include></record_update>]]></payload>
+        <payload_hash>-1689363600</payload_hash>
+        <record_name>widgetMacros.widgetMacros</record_name>
+        <reverted_from/>
+        <source>15aa67072f371010a8ce2b5df699b6df</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:10:32</sys_created_on>
+        <sys_id>18d554fe2f447010a8ce2b5df699b69d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1796b36ed540000001</sys_recorded_at>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:10:32</sys_updated_on>
+        <type>Dependency JS Includes</type>
+        <update_guid>10d554fee84470104eaa5c85dd1f709d</update_guid>
+        <update_guid_history>10d554fee84470104eaa5c85dd1f709d:-1689363600</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">e1981c722f847010a8ce2b5df699b6c1</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>erik.anderson</sys_created_by>
+        <sys_created_on>2021-05-14 14:22:38</sys_created_on>
+        <sys_db_object display_value="" name="m2m_sp_dependency_js_include">m2m_sp_dependency_js_include</sys_db_object>
+        <sys_id>0a02af46a25a4ff8ba371ed34d016240</sys_id>
+        <sys_metadata>5cd554fe2f447010a8ce2b5df699b69a</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>widgetMacros.widgetMacros</sys_name>
+        <sys_package display_value="Payload Mapper" source="x_156954_payload_m">cf93c6762fdb9410a8ce2b5df699b624</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Payload Mapper">cf93c6762fdb9410a8ce2b5df699b624</sys_scope>
+        <sys_scope_delete display_value="">8e00160ed6924a11a7c143681c955c69</sys_scope_delete>
+        <sys_update_name>m2m_sp_dependency_js_include_5cd554fe2f447010a8ce2b5df699b69a</sys_update_name>
+        <sys_update_version display_value="m2m_sp_dependency_js_include_5cd554fe2f447010a8ce2b5df699b69a">18d554fe2f447010a8ce2b5df699b69d</sys_update_version>
+        <sys_updated_by>erik.anderson</sys_updated_by>
+        <sys_updated_on>2021-05-14 14:22:38</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
